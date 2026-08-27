@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-<title>力の復習ラボ AI先生版 v2｜中学理科</title>
+<title>力の復習ラボ AI先生＋入試級｜中学理科</title>
 <style>
 :root{
   --bg:#f5faff;--panel:#fff;--ink:#18324c;--sub:#667c91;--line:#dbe8f4;
@@ -99,11 +99,34 @@ h2{font-size:clamp(23px,3vw,34px);margin:8px 0 13px}.prompt{font-size:19px;line-
 @keyframes nudgeIn{from{transform:translateY(8px);opacity:0}to{transform:translateY(0);opacity:1}}
 .aiConnectBtn{border:1px solid #c6d4ea;background:#fff;border-radius:999px;padding:6px 9px;font-size:11px;font-weight:1000;color:#365a7c}
 
+
+/* ---------- Entrance Challenge ---------- */
+.examHero{background:linear-gradient(135deg,#191f39,#33295f);color:#fff;border-radius:24px;padding:24px;margin-bottom:18px;position:relative;overflow:hidden}
+.examHero:after{content:"入試";position:absolute;right:-12px;top:-30px;font-size:120px;font-weight:1000;opacity:.055;transform:rotate(8deg)}
+.examHero h2{margin:5px 0 8px;color:#fff}.examHero p{margin:0;color:#dfe5ff;line-height:1.7}
+.examStats{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}.examStat{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:7px 11px;font-weight:900;font-size:13px}
+.examCard{border:1px solid var(--line);border-radius:22px;padding:22px;background:#fff}
+.examLevel{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:7px 10px;font-size:12px;font-weight:1000;background:#f0edff;color:#5943bd}
+.examQuestion{font-size:19px;line-height:1.8;margin-top:12px}
+.examData{margin:15px 0;background:#f7f9fc;border:1px solid #dde6f1;border-radius:15px;padding:14px 16px;line-height:1.75}
+.examChoices{display:grid;gap:9px;margin-top:15px}
+.examChoice{border:2px solid var(--line);border-radius:15px;background:#fff;padding:13px 14px;text-align:left;font-weight:850;color:var(--ink)}
+.examChoice:hover{border-color:#a8bfff;background:#f8faff}.examChoice.ok{border-color:#75c99f;background:#edfff6}.examChoice.ng{border-color:#e7a6a6;background:#fff2f2}
+.examAnswer{width:100%;min-height:125px;border:2px solid #d7e1ee;border-radius:15px;padding:13px;font:inherit;line-height:1.65;resize:vertical;outline:none;margin-top:14px}
+.examAnswer:focus{border-color:#7367ef}
+.examNumRow{display:flex;align-items:center;gap:9px;margin-top:15px;flex-wrap:wrap}.examNum{width:220px;max-width:65vw;border:2px solid #d7e1ee;border-radius:14px;padding:13px;font-size:19px}
+.examFeedback{margin-top:15px;padding:15px 16px;border-radius:16px;line-height:1.7;display:none}.examFeedback.show{display:block}.examFeedback.good{background:#edfff6;border:1px solid #b9e5ce;color:#176647}.examFeedback.bad{background:#fff5ef;border:1px solid #efc7b5;color:#88482d}.examFeedback.ai{background:#f5f2ff;border:1px solid #d7cdf7;color:#4d427a}
+.examNext{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-top:17px;flex-wrap:wrap}
+.examBoss{background:linear-gradient(135deg,#fff4d9,#ffe9db);border:1px solid #f0d1a5}
+.examHomeTeaser{margin-top:15px;padding:17px;border-radius:18px;background:linear-gradient(135deg,#fff7e3,#f4efff);border:1px solid #ead7b2;display:flex;justify-content:space-between;gap:14px;align-items:center;flex-wrap:wrap}
+.examHomeTeaser b{display:block;font-size:18px;margin-bottom:4px}.examHomeTeaser span{color:#665d76;line-height:1.55}
+.examRank{font-size:34px;font-weight:1000}
+
 </style>
 </head>
 <body>
 <header><div class="head">
-  <div class="brand"><div class="brandIcon">🧲</div><span>力の復習ラボ＋ AI先生</span></div>
+  <div class="brand"><div class="brandIcon">🧲</div><span>力の復習ラボ＋ AI先生｜入試級</span></div>
   <div class="courseProgress"><div class="progressText"><span id="progressLabel">スタート</span><span id="miniStatus"></span></div><div class="bar"><div id="courseBar"></div></div></div>
 </div></header>
 <main>
@@ -121,6 +144,10 @@ h2{font-size:clamp(23px,3vw,34px);margin:8px 0 13px}.prompt{font-size:19px;line-
       <button class="bigBtn" id="courseBtn">説明からゆっくり復習をはじめる</button>
       <button class="btn soft" id="forceOnlyBtn">↗ 矢印だけ練習</button>
       <button class="btn green" id="pressureOnlyBtn">🧮 圧力だけ練習</button>
+    </div>
+    <div class="examHomeTeaser">
+      <div><b>🏆 早く終わる人へ：入試級チャレンジ</b><span>計算を増やすだけじゃない。誤答分析・理由説明・複数条件・記述をAI採点官と攻略する。</span></div>
+      <button class="btn warn" id="examBtn">入試級に挑む →</button>
     </div>
 
     <div class="aiTutorIntro"><b>🤖 AI先生は、質問を待つだけじゃありません。</b><br>
@@ -190,6 +217,28 @@ h2{font-size:clamp(23px,3vw,34px);margin:8px 0 13px}.prompt{font-size:19px;line-
   </div>
   <div id="pressureSupport" class="support"></div><div id="pressureFb" class="feedback"></div>
   <div class="nav"><button class="btn ghost" onclick="goHome()">最初に戻る</button><div><button class="btn soft" id="pressureHintBtn">💡 ヒント</button> <button class="btn green" id="pressureNextBtn" style="display:none">次へ →</button></div></div>
+</div></section>
+
+
+<section id="examChallenge" class="screen"><div class="panel">
+  <div class="examHero">
+    <span class="tag" style="background:rgba(255,255,255,.15);color:#fff;border-color:transparent">🏆 入試級チャレンジ｜オリジナル問題</span>
+    <h2>「解ける」から、「説明できる」へ。</h2>
+    <p>中1「力」の知識だけで挑める入試レベル。AI採点官は、正解でも容赦なく「なぜ？」を返します。</p>
+    <div class="examStats"><span class="examStat" id="examProgress">1 / 8</span><span class="examStat" id="examScore">0 pt</span><span class="examStat" id="examStreak">連続正解 0</span></div>
+  </div>
+  <div class="examCard" id="examCard">
+    <span class="examLevel" id="examLevel">LEVEL 1</span>
+    <h2 id="examTitle"></h2>
+    <div class="examQuestion" id="examQuestion"></div>
+    <div id="examData"></div>
+    <div id="examAnswerArea"></div>
+    <div id="examFeedback" class="examFeedback"></div>
+    <div class="examNext">
+      <button class="btn ghost" onclick="goHome()">最初に戻る</button>
+      <div><button class="btn soft" id="examAiBtn" style="display:none">🤖 AIに深掘りされる</button> <button class="btn primary" id="examNextBtn" style="display:none">次の挑戦 →</button></div>
+    </div>
+  </div>
 </div></section>
 
 <section id="result" class="screen"><div class="panel">
@@ -344,7 +393,7 @@ function setHeader(label,pct,status=''){ $('progressLabel').textContent=label;$(
 function goHome(){show('home');setHeader('スタート',0,'')}
 window.goHome=goHome;
 document.querySelectorAll('.mode').forEach(b=>b.onclick=()=>{document.querySelectorAll('.mode').forEach(x=>x.classList.remove('active'));b.classList.add('active');mode=b.dataset.mode});
-$('courseBtn').onclick=()=>startRun('course');$('forceOnlyBtn').onclick=()=>startRun('force');$('pressureOnlyBtn').onclick=()=>startRun('pressure');$('retryBtn').onclick=()=>startRun(runType);
+$('courseBtn').onclick=()=>startRun('course');$('forceOnlyBtn').onclick=()=>startRun('force');$('pressureOnlyBtn').onclick=()=>startRun('pressure');$('retryBtn').onclick=()=>{if(runType==='exam')startExam();else startRun(runType)};
 let lessonNextAction=null;
 function startRun(type){
  runType=type;activityIndex=0;stats={quiz:0,force:0,pressure:0,hints:0};
@@ -491,6 +540,154 @@ function finish(){
 $('levelUpBtn').onclick=()=>{const to=$('levelUpBtn').dataset.to;if(!to)return;mode=to;document.querySelectorAll('.mode').forEach(x=>x.classList.toggle('active',x.dataset.mode===mode));startRun(runType)};
 
 
+
+/* ---------- Entrance Challenge ---------- */
+const examQs=[
+ {level:'LEVEL 1｜見抜け',title:'一定の速さで進む台車',type:'mc',pts:10,
+  q:'台車を右向きに4Nで引くと、台車はまっすぐ一定の速さで進んだ。台車には左向きの摩擦力もはたらいている。摩擦力として最も適切なのは？',
+  data:'「動いている＝進む向きの力が大きい」とは限らない。',
+  choices:['0N','左向き2N','左向き4N','右向き4N'],ans:2,
+  why:'一定の速さでまっすぐ進むので運動のようすは変化していない。左右の力はつり合い、摩擦力は左向き4N。'},
+ {level:'LEVEL 2｜3条件',title:'同じ6Nなら、つり合う？',type:'mc',pts:10,
+  q:'1つの板に、右向き6Nと左向き6Nの力がはたらいている。ただし、2本の矢印は平行だが同一直線上にはない。この2力は「つり合っている」といえる？',
+  data:'2力の大きさは同じ、向きは反対。残る条件は？',
+  choices:['いえる','いえない','板が静止していればいえる','作用点が同じなら必ずいえる'],ans:1,
+  why:'2力のつり合いには「大きさが等しい・向きが反対・同一直線上」の3条件が必要。'},
+ {level:'LEVEL 3｜多段計算',title:'直方体を置き替える',type:'number',pts:15,unit:'Pa',ans:600,
+  q:'質量1.2kgの直方体がある。100gにはたらく重力を1Nとする。この物体を 10cm×20cm の面を下にして水平な床に置いた。床が受ける圧力を求めよ。',
+  data:'直方体：10cm × 20cm × 30cm　　質量：1.2kg',
+  hint:'①重力をNにする ②10cm×20cmをm²にする ③圧力＝力÷面積',
+  why:'1.2kg=1200gなので重力は12N。10cm×20cm=200cm²=0.02m²。12÷0.02=600Pa。'},
+ {level:'LEVEL 4｜比較',title:'置き方を変えたら何倍？',type:'mc',pts:15,
+  q:'前問と同じ直方体を、今度は 20cm×30cm の面を下にして置く。最初の置き方（10cm×20cm）と比べ、圧力はどうなる？',
+  data:'物体の重さは変わらない。接地面積だけが変わる。',
+  choices:['3倍になる','同じ','1/3になる','1/6になる'],ans:2,
+  why:'面積は200cm²から600cm²へ3倍。力が同じなら圧力は面積に反比例するので1/3。'},
+ {level:'LEVEL 5｜誤答分析',title:'この答案、どこがまずい？',type:'text',pts:15,
+  q:'ある生徒が「60Nの箱、底面積300cm²」の圧力を、60÷300＝0.2Pa と答えた。間違いを指摘し、正しい答えまで説明せよ。',
+  data:'採点ポイント：単位変換 / 式 / 正しい数値 / 単位',
+  rubric:'300cm²を0.03m²に直す必要があること。60÷0.03=2000Pa。cm²のまま圧力の式に入れた点を指摘する。',
+  model:'300cm²は0.03m²に直す必要がある。圧力＝力÷面積なので、60÷0.03＝2000Pa。'},
+ {level:'LEVEL 6｜記述',title:'山でポテチがふくらむ理由',type:'text',pts:15,
+  q:'未開封のポテトチップスの袋を、低い場所から高い山へ持っていくと袋がふくらむことがある。大気圧を使って説明せよ。',
+  data:'「高い場所」「袋の外」「袋の中」の関係まで書けると強い。',
+  rubric:'高い場所ほど外側の大気圧が小さくなること。袋内部の圧力が外側より相対的に大きくなり、袋を外向きに押してふくらむこと。',
+  model:'高い場所では大気圧が小さくなるため、袋の外から押す力が弱くなる。袋の中の圧力の方が相対的に大きくなり、袋がふくらむ。'},
+ {level:'LEVEL 7｜設計',title:'雪に沈まない靴を設計せよ',type:'text',pts:10,
+  q:'同じ体重の人が雪の上を歩くとき、できるだけ沈みにくい靴を設計したい。どんな形にするか。「力・面積・圧力」の3語を使って説明せよ。',
+  data:'ただ「大きくする」だけでなく、なぜ沈みにくくなるかまで。',
+  rubric:'体重による力はほぼ同じ。雪と接する面積を大きくする。圧力＝力÷面積なので圧力が小さくなり、沈みにくくなる。',
+  model:'体重による力は同じなので、靴底を広くして雪と接する面積を大きくする。すると圧力＝力÷面積より雪への圧力が小さくなり、沈みにくくなる。'},
+ {level:'BOSS｜入試記述',title:'「動いているから力が勝っている」を論破せよ',type:'text',pts:20,boss:true,
+  q:'「右向きに動いている物体には、必ず右向きの力の方が大きくはたらいている」という生徒がいる。この説明が正しくないことを、具体例を1つ挙げて説明せよ。',
+  data:'条件：「力のつり合い」と「運動のようす」を結びつける。反例を作れたら勝ち。',
+  rubric:'一定の速さでまっすぐ動く電車・台車などを反例にする。動いていても運動のようすが変化しないときは力がつり合う場合があることを説明する。',
+  model:'例えば、まっすぐ一定の速さで進む電車は動いているが、運動のようすは変化していない。このとき進行方向と反対方向の力がつり合っている場合があるため、右向きの力が必ず大きいとはいえない。'}
+];
+let exi=0,examScore=0,examStreak=0,examSolved=false,examAttempts=0;
+
+function startExam(){
+  exi=0;examScore=0;examStreak=0;runType='exam';loadExam();
+}
+function loadExam(){
+  if(exi>=examQs.length){finishExam();return}
+  examSolved=false;examAttempts=0;
+  const q=examQs[exi];show('examChallenge');
+  setHeader('入試級チャレンジ',(exi/examQs.length)*100,`${exi+1}/${examQs.length}`);
+  $('examProgress').textContent=`${exi+1} / ${examQs.length}`;
+  $('examScore').textContent=`${examScore} pt`;
+  $('examStreak').textContent=`連続正解 ${examStreak}`;
+  $('examLevel').textContent=q.level;$('examTitle').textContent=q.title;$('examQuestion').textContent=q.q;
+  $('examCard').classList.toggle('examBoss',!!q.boss);
+  $('examData').innerHTML=q.data?`<div class="examData">${escapeHtml(q.data)}</div>`:'';
+  $('examFeedback').className='examFeedback';$('examFeedback').innerHTML='';
+  $('examNextBtn').style.display='none';$('examAiBtn').style.display='none';
+  renderExamAnswer(q);
+  setTimeout(()=>aiSchedule?.('exam_start',900),50);
+}
+function renderExamAnswer(q){
+  const a=$('examAnswerArea');
+  if(q.type==='mc'){
+    a.innerHTML=`<div class="examChoices">${q.choices.map((c,i)=>`<button class="examChoice" data-i="${i}">${String.fromCharCode(65+i)}. ${escapeHtml(c)}</button>`).join('')}</div>`;
+    a.querySelectorAll('.examChoice').forEach(b=>b.onclick=()=>judgeExamMC(Number(b.dataset.i),b));
+  }else if(q.type==='number'){
+    a.innerHTML=`<div class="examNumRow"><input id="examNum" class="examNum" inputmode="decimal" placeholder="数値を入力"><b>${q.unit||''}</b><button class="btn primary" id="examJudgeNum">判定</button></div>`;
+    $('examJudgeNum').onclick=judgeExamNumber;$('examNum').addEventListener('keydown',e=>{if(e.key==='Enter')judgeExamNumber()});
+  }else{
+    a.innerHTML=`<textarea id="examText" class="examAnswer" placeholder="自分の言葉で説明しよう。短くてもOK。"></textarea><div style="margin-top:9px"><button class="btn primary" id="examGradeText">🤖 AI採点官に提出</button></div>`;
+    $('examGradeText').onclick=gradeExamText;
+  }
+}
+function examGood(q,detail){
+  if(examSolved)return;examSolved=true;examStreak++;examScore+=q.pts+(examAttempts===1?5:0);
+  $('examScore').textContent=`${examScore} pt`;$('examStreak').textContent=`連続正解 ${examStreak}`;
+  $('examFeedback').className='examFeedback show good';
+  $('examFeedback').innerHTML=`<b>突破！ ${q.pts}${examAttempts===1?' + 初見BONUS 5':''} pt</b><br>${escapeHtml(detail||q.why||'')}`;
+  $('examNextBtn').style.display='inline-block';$('examAiBtn').style.display='inline-block';
+}
+function judgeExamMC(i,b){
+  if(examSolved)return;examAttempts++;const q=examQs[exi];
+  if(i===q.ans){b.classList.add('ok');examGood(q,q.why)}
+  else{b.classList.add('ng');examStreak=0;$('examStreak').textContent='連続正解 0';$('examFeedback').className='examFeedback show bad';$('examFeedback').innerHTML=`<b>再考。</b><br>${examAttempts>=2?escapeHtml(q.why):'条件を1つ見落としていないか確認しよう。答えを変える前に「なぜ」を言えるか。'}`}
+}
+function judgeExamNumber(){
+  if(examSolved)return;examAttempts++;const q=examQs[exi],v=Number($('examNum').value);
+  if(Math.abs(v-q.ans)<1e-9)examGood(q,q.why);
+  else{examStreak=0;$('examStreak').textContent='連続正解 0';$('examFeedback').className='examFeedback show bad';$('examFeedback').innerHTML=`<b>まだ違う。</b><br>${examAttempts>=2?escapeHtml(q.why):escapeHtml(q.hint||'式と単位を確認しよう。')}`}
+}
+function localTextCoverage(text,q){
+  const s=text.replace(/\s/g,'').toLowerCase();
+  if(exi===4) return ((/0\.03/.test(s)||/0.03/.test(s))&&/2000/.test(s)&&(s.includes('m²')||s.includes('m2')||s.includes('平方メートル')));
+  if(exi===5) return /高|山/.test(s) && /大気圧|圧力/.test(s) && /小|低/.test(s) && /中|内/.test(s) && /外/.test(s);
+  if(exi===6) return /面積/.test(s)&&/大き|広/.test(s)&&/圧力/.test(s)&&/小/.test(s)&&/力/.test(s);
+  if(exi===7) return /一定/.test(s)&&/速/.test(s)&&/つり合/.test(s);
+  return s.length>=25;
+}
+async function gradeExamText(){
+  if(examSolved)return;const q=examQs[exi],text=$('examText').value.trim();
+  if(text.length<6){$('examFeedback').className='examFeedback show bad';$('examFeedback').innerHTML='<b>もう一声。</b><br>短くていいので、理由まで書いてみよう。';return}
+  examAttempts++;$('examFeedback').className='examFeedback show ai';$('examFeedback').innerHTML='<b>🤖 AI採点官が採点中…</b><br>正解かどうかだけでなく、説明の筋を見ています。';
+  let feedback='';
+  try{
+    const prompt=`【入試記述の採点】\n問題：${q.q}\n採点観点：${q.rubric}\n生徒答案：${text}\n\n中学生に返す。最初に「満点級」「あと一歩」「再考」のどれかで判定し、良い点→足りない点→よりよい短い答案例→最後に追撃の一問、の順で150〜260字程度。`;
+    const prior=aiState.history.slice(-4);
+    const r=await aiApiRequest(prompt,prior,true);
+    if(r && !r.error && !r.demo && !r.needsCode) feedback=cleanAiReply(r.reply||'');
+  }catch(_){}
+  if(!feedback){
+    feedback=localTextCoverage(text,q)
+      ? `満点級。必要な考え方が入っている。さらに答案を締めるなら、因果関係を「だから」で1文につなぐと強い。答案例：${q.model}`
+      : `あと一歩。方向はいいけど、採点者に伝わる条件が不足している。入れたい核はこれ：${q.rubric}　答案例：${q.model}`;
+  }
+  const pass=localTextCoverage(text,q);
+  if(pass){
+    examGood(q,feedback);
+  }else{
+    examStreak=0;$('examStreak').textContent='連続正解 0';
+    $('examFeedback').className='examFeedback show ai';
+    $('examFeedback').innerHTML=`<b>🤖 AI採点官：再提出できる。</b><br>${escapeHtml(feedback)}`;
+  }
+}
+$('examNextBtn').onclick=()=>{exi++;loadExam()};
+$('examAiBtn').onclick=()=>{
+  const q=examQs[exi];
+  aiOpen();aiSendMessage(`今の入試級問題「${q.title}」は解けた。もっと深く理解できる追撃問題を1問だけ出して。答えはまだ言わないで。`);
+};
+function finishExam(){
+  show('result');setHeader('入試級 完走',100,'🏆');
+  const max=examQs.reduce((s,q)=>s+q.pts,0)+examQs.length*5;
+  const rate=examScore/max;
+  let rank=rate>=.85?'S':rate>=.68?'A':rate>=.5?'B':'C';
+  $('resultTitle').textContent=`入試級チャレンジ 完走｜RANK ${rank}`;
+  $('resultMsg').textContent=`${examScore} pt。入試で差がつく「理由説明・条件の見抜き・誤答分析」まで挑戦しました。`;
+  $('quizStat').style.display='none';$('forceStat').style.display='none';$('pressureStat').style.display='none';
+  $('resultMaster').innerHTML=`<div class="master"><b class="examRank">RANK ${rank}</b>知識を答えるだけでなく、条件を読み、理由を説明し、他人の誤答を直すところまでが入試力。</div>`;
+  $('resultNext').innerHTML='<b>まだ物足りない人へ。</b><br>右下のAI先生に「この単元で高校入試の最難関級を出して」と言えば、さらに考察問題を続けられます。';
+  $('retryBtn').textContent='入試級をもう一度';$('levelUpBtn').style.display='none';
+}
+$('examBtn').onclick=startExam;
+
+
 /* ---------- AI Tutor Integration v2 ---------- */
 const aiState={
   history:[],
@@ -542,6 +739,11 @@ function aiCurrentContext(){
   }else if(screen==='pressureLab'){
     const q=pressureQs[psi];ctx.unit='圧力';ctx.stage=psi+1;ctx.title=q?.title||'';ctx.problem=q?.text||'';
     ctx.studentAnswer=$('pressureAnswer')?.value||'';ctx.feedback=$('pressureFb')?.innerText||'';ctx.hintLevel=pHintLevel;
+  }else if(screen==='examChallenge'){
+    const q=examQs[exi];
+    ctx.unit='入試級チャレンジ';ctx.stage=exi+1;ctx.title=q?.title||'';ctx.problem=q?.q||'';
+    ctx.examAnswer=q?.type==='text'?($('examText')?.value||''):(q?.type==='number'?($('examNum')?.value||''):'');
+    ctx.examRubric=q?.rubric||'';ctx.examScore=examScore;ctx.examStreak=examStreak;
   }else if(screen==='result'){
     ctx.unit='学習結果';ctx.summary=$('resultMsg')?.innerText||'';
   }else{ctx.unit='学習開始前';}
@@ -556,14 +758,26 @@ function aiContextLabel(){
   return c.unit?`${c.unit}を一緒に学習中`:'いまの画面を見ながら一緒に考える';
 }
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+function cleanAiReply(text){
+  let s=String(text??'').trim();
+  s=s.replace(/^```(?:json)?\s*/i,'').replace(/\s*```$/,'').trim();
+  for(let k=0;k<2;k++){
+    if(!(s.startsWith('{')&&s.endsWith('}')))break;
+    try{
+      const o=JSON.parse(s);
+      if(typeof o.reply==='string'){s=o.reply.trim();continue}
+      if(typeof o.message==='string'){s=o.message.trim();continue}
+    }catch(_){break}
+  }
+  return s.replace(/^\s*["']?reply["']?\s*:\s*/i,'').trim();
+}
 function aiAddMessage(role,text,extra={}){
   const box=$('aiMessages');if(!box)return;
-  const div=document.createElement('div');div.className=`aiMsg ${role}`;div.textContent=text;
+  const div=document.createElement('div');div.className=`aiMsg ${role}`;div.textContent=cleanAiReply(text);
   if(extra.challenge){
     const ch=document.createElement('div');ch.className='aiChallenge';
     ch.innerHTML=`<b>🔥 挑戦</b><br>${escapeHtml(extra.challenge)}`;div.appendChild(ch);
   }
-  if(extra.meta){const mm=document.createElement('div');mm.className='aiMeta';mm.textContent=extra.meta;div.appendChild(mm)}
   box.appendChild(div);box.scrollTop=box.scrollHeight;
 }
 function aiShowNudge(text){
@@ -727,8 +941,8 @@ async function aiSendMessage(preset=''){
       else if(r.error){aiState.connection='error';aiUpdateConnectionBadge();aiAddMessage('system',r.error);$('aiStatus').textContent='いまは教材内AIで続けられます。';data=aiLocalTutor(text,'manual')}
       else data=r;
     }
-    const reply=data.reply||'一緒に考えよう。';
-    aiAddMessage('bot',reply,{challenge:data.challenge||'',meta:data.coach_move?`指導：${data.coach_move}`:''});
+    const reply=cleanAiReply(data.reply||'一緒に考えよう。');
+    aiAddMessage('bot',reply,{challenge:data.challenge||''});
     aiState.history.push({role:'assistant',content:reply+(data.challenge?`\n挑戦：${data.challenge}`:'')});aiState.history=aiState.history.slice(-10);
     if(data.challenge)aiState.learner.challengesTried++;
     if(data.mastery_signal==='strong')aiState.learner.successfulExplanations++;
@@ -755,6 +969,7 @@ async function aiProactive(eventType,customPrompt=''){
     force_wrong:'生徒が力の矢印を誤った。今描いた矢印と正解条件を見て、一番直すべき1点だけヒントを出して。',
     pressure_start:'生徒が圧力計算に入った。今の問題でまず拾う数値や単位を、答えを言わず短く声かけして。',
     pressure_wrong:'生徒が圧力計算を誤った。式・単位・計算のどこを見直すべきか、一段だけヒントを出して。',
+    exam_start:'生徒が入試級チャレンジに入った。答えは言わず、「この問題では何を見抜くか」を一言だけ声かけして。',
     success:'生徒が正解した。理解が深まりそうなら短く褒め、得意そうなら1つだけ「なぜ？」を添えて。',
     idle:'生徒の手が止まっている。プレッシャーをかけず、「分からない場所だけ言ってもよい」と短く声をかけて。'
   };
@@ -765,9 +980,9 @@ async function aiProactive(eventType,customPrompt=''){
     if(r && !r.demo && !r.needsCode && !r.error)data=r;
   }
   if(!data)data=aiLocalTutor(prompt,eventType);
-  const text=data.reply||'一緒に考えよう。';
+  const text=cleanAiReply(data.reply||'一緒に考えよう。');
   aiShowNudge(text);
-  if($('aiTutor').classList.contains('open'))aiAddMessage('bot',text,{challenge:data.challenge||'',meta:'AI先生からの声かけ'});
+  if($('aiTutor').classList.contains('open'))aiAddMessage('bot',text,{challenge:data.challenge||''});
 }
 
 function aiSchedule(eventType,delay=900){
@@ -823,12 +1038,19 @@ judgePressure=function(){
   }
 };
 $('pressureJudgeBtn').onclick=judgePressure;
+$('pressureAnswer').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();judgePressure()}});
+$('pressureKeys').querySelectorAll('.key').forEach(b=>b.onclick=()=>{
+  const k=b.dataset.k,a=$('pressureAnswer');
+  if(k==='enter')return judgePressure();
+  if(k==='back'){a.value=a.value.slice(0,-1);return}
+  if(k==='.'&&a.value.includes('.'))return;a.value+=k;a.focus();
+});
 
 /* 手が止まったときの声かけ */
 ['pointerdown','keydown','input','touchstart'].forEach(ev=>document.addEventListener(ev,()=>{aiState.lastActivityAt=Date.now()},{passive:true}));
 setInterval(()=>{
   if(aiState.talkLevel==='off'||aiState.busy)return;
-  const s=activeScreenId();if(!['quiz','forceLab','pressureLab'].includes(s))return;
+  const s=activeScreenId();if(!['quiz','forceLab','pressureLab','examChallenge'].includes(s))return;
   const threshold=aiState.talkLevel==='chatty'?35000:65000;
   if(Date.now()-aiState.lastActivityAt<threshold)return;
   const key=aiContextKey();if(aiState.idleNudgedKey===key)return;

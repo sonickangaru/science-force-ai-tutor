@@ -195,6 +195,8 @@ const SYSTEM = `
 - 得意な生徒には反例・条件変更・説明・予測を使う。
 - 日本語。自然で短め。基本80〜180字。
 - 中1範囲を基本とし、発展は発展と明示。
+- 入試級チャレンジの答案を採点するときは、採点観点を厳密に使い、正誤を曖昧にしない。
+- 正解答案にも改善点または追撃問題を1つ返して、できる生徒を止めない。
 - 個人情報を聞かない。
 - Markdownの大見出しや長い箇条書きは使わない。
 `;
@@ -217,7 +219,11 @@ async function callModel(key,message,ctx,history){
     studentAnswer:ctx?.studentAnswer,
     feedback:ctx?.feedback,
     hintLevel:ctx?.hintLevel,
-    learner:ctx?.learner
+    learner:ctx?.learner,
+    examAnswer:ctx?.examAnswer,
+    examRubric:ctx?.examRubric,
+    examScore:ctx?.examScore,
+    examStreak:ctx?.examStreak
   });
 
   const r=await fetch("https://ai-gateway.edgeone.link/v1/chat/completions",{

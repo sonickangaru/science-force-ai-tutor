@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-<title>力の復習ラボ AI先生＋入試級 v5｜中学理科</title>
+<title>力の復習ラボ AI先生＋入試級 v6｜中学理科</title>
 <style>
 :root{
   --bg:#f5faff;--panel:#fff;--ink:#18324c;--sub:#667c91;--line:#dbe8f4;
@@ -224,7 +224,7 @@ h2{font-size:clamp(23px,3vw,34px);margin:8px 0 13px}.prompt{font-size:19px;line-
   <div class="examHero">
     <span class="tag" style="background:rgba(255,255,255,.15);color:#fff;border-color:transparent">🏆 入試級チャレンジ｜オリジナル問題</span>
     <h2>「解ける」から、「説明できる」へ。</h2>
-    <p>中1「力」の知識だけで挑める入試レベル。採点官は答案の不足を具体的に返し、合格答案はAIがさらに磨きます。</p>
+    <p>中1「力」の知識だけで挑める入試レベル。入試コーチが答案を読み、足りない1点だけ返します。合格答案にはさらに深い問いを出します。</p>
     <div class="examStats"><span class="examStat" id="examProgress">1 / 8</span><span class="examStat" id="examScore">0 pt</span><span class="examStat" id="examStreak">連続正解 0</span></div>
   </div>
   <div class="examCard" id="examCard">
@@ -587,7 +587,14 @@ const examQs=[
 let exi=0,examScore=0,examStreak=0,examSolved=false,examAttempts=0;
 
 function startExam(){
-  exi=0;examScore=0;examStreak=0;runType='exam';loadExam();
+  exi=0;examScore=0;examStreak=0;runType='exam';
+  // 入試モードでは一般チャットの古い会話を持ち込まず、コーチを1人に統一
+  if($('aiMessages')) $('aiMessages').innerHTML='';
+  aiState.history=[];
+  loadExam();
+  setTimeout(()=>{
+    aiAddMessage('bot','入試モードでは、こっちも「入試コーチ」になる。答案を書いたら、その内容を見て足りない1点だけ返す。分からなければ「ヒントだけ」でOK。');
+  },150);
 }
 function loadExam(){
   if(exi>=examQs.length){finishExam();return}
@@ -614,7 +621,7 @@ function renderExamAnswer(q){
     a.innerHTML=`<div class="examNumRow"><input id="examNum" class="examNum" inputmode="decimal" placeholder="数値を入力"><b>${q.unit||''}</b><button class="btn primary" id="examJudgeNum">判定</button></div>`;
     $('examJudgeNum').onclick=judgeExamNumber;$('examNum').addEventListener('keydown',e=>{if(e.key==='Enter')judgeExamNumber()});
   }else{
-    a.innerHTML=`<textarea id="examText" class="examAnswer" placeholder="自分の言葉で説明しよう。短くてもOK。"></textarea><div style="margin-top:9px"><button class="btn primary" id="examGradeText">🤖 採点官に提出</button></div>`;
+    a.innerHTML=`<textarea id="examText" class="examAnswer" placeholder="自分の言葉で説明しよう。短くてもOK。"></textarea><div style="margin-top:9px"><button class="btn primary" id="examGradeText">🤖 入試コーチに見せる</button></div>`;
     $('examGradeText').onclick=gradeExamText;
   }
 }
@@ -638,43 +645,55 @@ function judgeExamNumber(){
 function assessExamText(text,q){
   const raw=String(text||'');
   const s=raw.replace(/\s/g,'').toLowerCase();
-  const has=(re)=>re.test(s);
 
   // LEVEL 5：誤答分析
   if(exi===4){
-    const unitProblem = /cm²|cm2|平方センチ|単位|m²|m2|平方メートル/.test(raw);
-    const convert = /0[\.．]03/.test(s) || (/300/.test(s)&&/10000/.test(s));
-    const formula = /60/.test(s) && (/0[\.．]03/.test(s)||/力.*面積|圧力.*力/.test(raw));
-    const result = /2000/.test(s);
+    const saysCmBad = /cm²|cm2|平方センチ/.test(raw) && /(だめ|ダメ|使えない|直す|変換|そのまま)/.test(raw);
+    const saysM3 = /m³|m3|立方メートル/.test(raw);
+    const saysM2 = /m²|m2|平方メートル/.test(raw);
+    const convert003 = /0[\.．]03/.test(s);
+    const result2000 = /2000/.test(s);
     const pa = /pa|パスカル/i.test(raw);
 
-    if(convert && result && pa){
+    // 典型：考え方は合ってるが m³ と書いた
+    if((saysCmBad || convert003) && saysM3){
+      return {
+        status:'partial',
+        feedback:'かなり惜しい！「cm²のままではダメ」という考えは合ってる。直すのは1点だけ。これは体積じゃなく面積だから、m³ではなくm²。300cm²＝0.03m²やね。ここまで直せたら、次は60÷0.03を計算してみよう。'
+      };
+    }
+
+    if(saysM2 && convert003 && result2000 && pa){
       return {
         status:'pass',
-        feedback:'満点級。cm²のまま式に入れた誤りを直し、300cm²＝0.03m²、60÷0.03＝2000Paまでつながっている。あとは「なぜcm²のままではダメか」を一言添えると、さらに採点者に伝わる答案になる。'
+        feedback:'満点級。300cm²＝0.03m²に直し、60÷0.03＝2000Paまで書けている。誤りの原因→正しい単位変換→計算→単位、の流れがそろっている。'
       };
     }
-    if(unitProblem && !convert){
+
+    if((saysCmBad || saysM2) && !convert003){
       return {
         status:'partial',
-        feedback:'そこは合ってる！ 間違いの原因は「300cm²をそのまま使ったこと」。ただ、入試答案は原因を言うだけでは点を取り切れない。次は 300cm² を m² に直してみよう。ヒント：1m²＝10000cm²。'
+        feedback:'そこは正解！「300cm²をそのまま使えない」と見抜けてる。次の1手は単位変換。1m²＝10000cm²だから、300cm²は何m²になる？'
       };
     }
-    if(convert && !result){
+
+    if(convert003 && !result2000){
       return {
         status:'partial',
-        feedback:'いい、単位変換は突破。300cm²＝0.03m² まで書けている。次は圧力＝力÷面積に入れて、60÷0.03 を計算しよう。最後はPaまで書けば完成。'
+        feedback:'いい！300cm²＝0.03m²までは正解。ここから圧力＝力÷面積に入れて、60÷0.03を計算しよう。最後にPaまで付ければ完成。'
       };
     }
-    if(result && !convert){
+
+    if(result2000 && !convert003){
       return {
         status:'partial',
-        feedback:'2000という数値には近づいている。でも「なぜそうなるか」が答案から見えない。300cm²＝0.03m² と単位変換を書いてから、60÷0.03＝2000Pa とつなげよう。'
+        feedback:'2000という答えには届いてる。ただ、入試では途中の理由も点になる。300cm²＝0.03m²を書いて、60÷0.03＝2000Paとつなげよう。'
       };
     }
+
     return {
       status:'weak',
-      feedback:'まず誤りを1個だけ特定しよう。圧力の式で面積に使える単位は m²。問題の300cm²を、そのまま「300」として割ってよいかを考えてみよう。'
+      feedback:'まず1個だけ見抜こう。圧力の式で面積に使う単位はm²。問題の300cm²を、そのまま「300」として割ってよいか考えてみよう。'
     };
   }
 
@@ -687,27 +706,15 @@ function assessExamText(text,q){
     const expand = /ふくら|膨ら|外向き|広が/.test(raw);
 
     if(high && outside && lower && inside && expand){
-      return {
-        status:'pass',
-        feedback:'満点級。「高い場所ほど外側の大気圧が小さい」→「袋の中の圧力が相対的に大きい」→「外向きにふくらむ」という因果がつながっている。'
-      };
+      return {status:'pass',feedback:'満点級。「高い場所→外側の大気圧が小さくなる→袋の中の圧力が相対的に大きくなる→ふくらむ」という因果がつながっている。'};
     }
     if(high && lower && !inside){
-      return {
-        status:'partial',
-        feedback:'前半はいい！ 「高い山では大気圧が小さくなる」は正しい。あと一歩、袋の“外”だけでなく“中”の圧力と比べると、なぜ袋がふくらむかまで説明できる。'
-      };
+      return {status:'partial',feedback:'前半は正解！「高い山では大気圧が小さくなる」まで書けてる。あと1文、袋の“中”と“外”の圧力を比べて、なぜ外向きにふくらむかを書こう。'};
     }
     if(/大気圧|圧力/.test(raw) && expand){
-      return {
-        status:'partial',
-        feedback:'方向は合ってる。入試答案では「どこの圧力がどう変わるか」を具体化しよう。高い場所では袋の外の大気圧がどうなる？ そのとき袋の中との大小関係は？'
-      };
+      return {status:'partial',feedback:'方向は合ってる。入試答案では「どこの圧力がどう変わるか」を具体化しよう。高い場所では袋の外の大気圧はどうなる？'};
     }
-    return {
-      status:'weak',
-      feedback:'「高い山では大気圧がどうなるか」から始めよう。次に、袋の外側の圧力と袋の中の圧力を比べると説明しやすい。'
-    };
+    return {status:'weak',feedback:'まず「高い山では大気圧がどうなるか」だけ答えてみよう。そこから袋の中と外を比べればつながる。'};
   }
 
   // LEVEL 7：設計
@@ -720,30 +727,18 @@ function assessExamText(text,q){
     const sink = /沈みにく|沈ま/.test(raw);
 
     if(force && area && bigger && pressure && smaller && sink){
-      return {
-        status:'pass',
-        feedback:'満点級。「力は同じ」→「接地面積を大きくする」→「圧力が小さくなる」→「沈みにくい」の流れができている。条件と結果がきれいにつながっている。'
-      };
+      return {status:'pass',feedback:'満点級。「力は同じ→接地面積を大きくする→圧力が小さくなる→沈みにくい」の因果が全部つながっている。'};
     }
     if(area && bigger && pressure && !smaller){
-      return {
-        status:'partial',
-        feedback:'設計は正しい。靴底を広くして面積を大きくするところまでOK。次は、力が同じなら圧力＝力÷面積より圧力がどう変わるかを書こう。'
-      };
+      return {status:'partial',feedback:'設計は正しい。靴底を広くして面積を大きくするところまでOK。次に、力が同じなら圧力がどう変わるかを書こう。'};
     }
     if(/広|大き/.test(raw) && !area){
-      return {
-        status:'partial',
-        feedback:'「靴を広くする」は正解方向。ただ、入試では科学の言葉に変換したい。「雪と接する面積を大きくする」と書き、圧力がどうなるかまでつなげよう。'
-      };
+      return {status:'partial',feedback:'「靴を広くする」は正解方向。入試答案では「雪と接する面積を大きくする」と科学の言葉に変えて、圧力までつなげよう。'};
     }
-    return {
-      status:'weak',
-      feedback:'体重そのものは変えられない。変えられるのは雪と接する「面積」。圧力＝力÷面積から、どんな靴底がよいか考えよう。'
-    };
+    return {status:'weak',feedback:'体重は変えられない。変えられるのは雪と接する面積。圧力＝力÷面積から、どんな靴底がよいか考えよう。'};
   }
 
-  // BOSS：反例
+  // BOSS
   if(exi===7){
     const example = /電車|台車|自転車|車|物体/.test(raw);
     const constant = /一定/.test(raw) && /速/.test(raw);
@@ -752,33 +747,18 @@ function assessExamText(text,q){
     const refute = /必ず|とはいえ|間違|正しくない|大きいとは/.test(raw);
 
     if(example && constant && balance && (straight || refute)){
-      return {
-        status:'pass',
-        feedback:'満点級。具体的な反例を出し、「動いていても一定の速さでまっすぐなら力がつり合う場合がある」と説明できている。これで“必ず右向きが大きい”を論破できる。'
-      };
+      return {status:'pass',feedback:'満点級。具体的な反例を出し、「動いていても一定の速さでまっすぐなら力がつり合う場合がある」と説明できている。'};
     }
     if(constant && !balance){
-      return {
-        status:'partial',
-        feedback:'「一定の速さ」を出せたのがかなり良い。あと、なぜそれが反例になるかを書くために「力のつり合い」という語をつなげよう。'
-      };
+      return {status:'partial',feedback:'「一定の速さ」を出せたのがかなり良い。あと「力のつり合い」という語をつなげれば、なぜ反例になるかまで説明できる。'};
     }
     if(balance && !constant){
-      return {
-        status:'partial',
-        feedback:'「力がつり合う」は大事。ただ、動いている反例にするため、例えば「まっすぐ一定の速さで走る電車」のような具体例を置こう。'
-      };
+      return {status:'partial',feedback:'「力がつり合う」は大事。今度は“動いている反例”にするため、「まっすぐ一定の速さで走る電車」みたいな具体例を置こう。'};
     }
-    return {
-      status:'weak',
-      feedback:'反例を1つ作ろう。「動いているのに、運動のようすが変わっていないもの」はないかな？ “一定の速さでまっすぐ”がキーワード。'
-    };
+    return {status:'weak',feedback:'反例を1つ作ろう。「動いているのに運動のようすが変わっていないもの」はないかな？ “一定の速さでまっすぐ”がキーワード。'};
   }
 
-  return {
-    status: raw.length>=25 ? 'pass' : 'partial',
-    feedback: raw.length>=25 ? '考え方は伝わっている。' : 'もう少し理由まで書いてみよう。'
-  };
+  return {status:raw.length>=25?'pass':'partial',feedback:raw.length>=25?'考え方は伝わっている。':'もう少し理由まで書いてみよう。'};
 }
 
 function localTextCoverage(text,q){
@@ -802,13 +782,13 @@ async function gradeExamText(){
   if(assessment.status!=='pass'){
     examStreak=0;$('examStreak').textContent='連続正解 0';
     $('examFeedback').className='examFeedback show ai';
-    $('examFeedback').innerHTML=`<b>🤖 採点官：${assessment.status==='partial'?'あと一歩':'再考'}。再提出できる。</b><br>${escapeHtml(assessment.feedback)}`;
+    $('examFeedback').innerHTML=`<b>🤖 入試コーチ：${assessment.status==='partial'?'ここまで合ってる。あと一歩！':'まず1点だけ直そう。'}</b><br>${escapeHtml(assessment.feedback)}`;
     return;
   }
 
   // 必要事項を満たしてから、AIには「表現の質・深掘り」を見てもらう
   $('examFeedback').className='examFeedback show ai';
-  $('examFeedback').innerHTML='<b>🤖 AI採点官：内容は合格ライン。答案の質を最終確認中…</b>';
+  $('examFeedback').innerHTML='<b>🤖 入試コーチ：内容は合格ライン。答案をさらに磨いています…</b>';
 
   let aiFeedback='';
   try{
@@ -924,6 +904,7 @@ function aiContextKey(){
 }
 function aiContextLabel(){
   const c=aiCurrentContext();
+  if(c.screen==='examChallenge') return '入試コーチ｜今の答案を見ながら指導中';
   return c.unit?`${c.unit}を一緒に学習中`:'いまの画面を見ながら一緒に考える';
 }
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
@@ -962,7 +943,15 @@ function aiWelcome(){
   aiAddMessage('system','このAIには名前・住所・連絡先などの個人情報は書かないでね。学習の質問だけで大丈夫。');
 }
 function aiOpen(){
-  $('aiTutor').classList.add('open');$('aiTutorContextLabel').textContent=aiContextLabel();aiWelcome();
+  $('aiTutor').classList.add('open');
+  $('aiTutorContextLabel').textContent=aiContextLabel();
+  const titleEl=document.querySelector('.aiTutorTitle');
+  if(titleEl){
+    const small=titleEl.querySelector('small');
+    const smallHtml=small?small.outerHTML:'';
+    titleEl.innerHTML=(activeScreenId()==='examChallenge'?'🏆 入試コーチ':'🤖 AI理科先生')+smallHtml;
+  }
+  aiWelcome();
   $('aiNudgeBubble')?.classList.remove('show');
 }
 function aiClose(){$('aiTutor').classList.remove('open')}
@@ -1022,6 +1011,50 @@ aiCheckConnection();
 function aiLocalTutor(message,eventType='manual'){
   const c=aiCurrentContext(),t=(message||'').toLowerCase();
   let reply='',challenge='';
+
+  // 入試モードでは、右のAI先生も「入試コーチ」として同じ答案を読む
+  if(c.screen==='examChallenge'){
+    const q=examQs[exi];
+    const ans=(c.examAnswer||'').trim();
+    const assessment=ans ? assessExamText(ans,q) : null;
+
+    if(eventType==='exam_start'){
+      if(exi===4) reply='この問題は計算より「何を間違えたか」を見抜く問題。まず単位だけ見よう。300cm²をそのまま式に入れていいかな？';
+      else if(exi===5) reply='「高い山で外の大気圧がどうなるか」から考えると、袋の中との比較につながる。';
+      else if(exi===6) reply='変えられないのは体重。変えられるのは接地面積。圧力の式につなげよう。';
+      else if(exi===7) reply='“動いているのに力がつり合う例”を1つ作れたら、この主張を崩せる。';
+      else reply='答えを急がず、問題文の条件を1つずつ拾おう。';
+      return {reply,challenge:'',coach_move:'hint',mastery_signal:'unknown',suggested_mode:'keep'};
+    }
+
+    if(/ここ.*分から|わから|ヒント/.test(t)){
+      reply=assessment ? assessment.feedback : (q.hint||'問題文の条件を1つだけ拾おう。');
+      return {reply,challenge:'',coach_move:'hint',mastery_signal:'unknown',suggested_mode:'keep'};
+    }
+
+    if(/なんで|なぜ/.test(t)){
+      if(exi===4) reply='圧力の式は面積をm²で入れる約束だから。cm²とm²では面積の大きさが1万倍違うので、そのまま数字だけ使うと答えも大きくずれる。';
+      else if(exi===5) reply='高い山ほど自分より上にある空気が少なく、外から押す大気圧が小さくなる。すると袋の中の圧力が相対的に大きくなって袋がふくらむ。';
+      else if(exi===6) reply='同じ体重なら雪を押す力はほぼ同じ。接地面積を広げると、力がより広い面に分散されるので圧力が小さくなる。';
+      else if(exi===7) reply='力のつり合いは「止まっている」だけでなく、「一定の速さでまっすぐ動く」場合にも起こるから。';
+      else reply=q.why||'条件を式やつり合いのルールに結びつけると説明できる。';
+      return {reply,challenge:'',coach_move:'explain',mastery_signal:'developing',suggested_mode:'keep'};
+    }
+
+    if(/難問|むずか|チャレンジ|追撃/.test(t)){
+      challenge=exi===4?'300cm²を0.03m²に直すとき、なぜ「100」でなく「10000」で割るのか、長さの単位変換から説明して。':
+                exi===5?'もし袋に小さな穴が開いていたら、山へ持っていったとき同じようにふくらむ？理由も。':
+                exi===6?'同じ面積の靴でも、片足立ちと両足立ちでは雪への圧力はどう変わる？':
+                '一定の速さで「曲がっている」車は、力がつり合っていると言える？';
+      reply='いいね。今の問題を1段深くしよう。';
+      return {reply,challenge,coach_move:'challenge',mastery_signal:'strong',suggested_mode:'keep'};
+    }
+
+    if(ans && assessment){
+      reply=assessment.feedback;
+      return {reply,challenge:'',coach_move:'evaluate',mastery_signal:assessment.status==='pass'?'strong':'developing',suggested_mode:'keep'};
+    }
+  }
   if(eventType==='lesson'){
     if((c.unit||'').includes('圧力'))reply='ここは公式を暗記する前に、「同じ力なら、せまい面ほど強く押される」をつかめば勝ち。説明を読んだら、身近な例を1つ思い浮かべてみよう。';
     else if((c.unit||'').includes('つり合'))reply='ここは「止まっているか」より、2力の3条件を見るのがコツ。同じ・反対・一直線、を合言葉にしよう。';
@@ -1102,7 +1135,11 @@ async function aiSendMessage(preset=''){
   aiState.busy=true;$('aiSend').disabled=true;$('aiStatus').textContent='今の画面も見ながら考えています…';
   try{
     let data;
-    if(aiState.connection==='demo')data=aiLocalTutor(text,'manual');
+    if(activeScreenId()==='examChallenge'){
+      // 入試画面ではまず現在の答案・問題に基づく専用コーチを使う。
+      // 「自分の答案を採点して」等の自由記述評価は左の提出ボタンが担当。
+      data=aiLocalTutor(text,'manual');
+    }else if(aiState.connection==='demo')data=aiLocalTutor(text,'manual');
     else{
       const r=await aiApiRequest(text,prior,true);
       if(r.demo){aiState.connection='demo';aiUpdateConnectionBadge();data=aiLocalTutor(text,'manual')}
@@ -1115,7 +1152,9 @@ async function aiSendMessage(preset=''){
     aiState.history.push({role:'assistant',content:reply+(data.challenge?`\n挑戦：${data.challenge}`:'')});aiState.history=aiState.history.slice(-10);
     if(data.challenge)aiState.learner.challengesTried++;
     if(data.mastery_signal==='strong')aiState.learner.successfulExplanations++;
-    $('aiStatus').textContent=aiState.connection==='demo'?'プレビューでは教材内AI。本番配置後は生成AIがこの役をします。':'いつでも続けて質問してOK。';
+    $('aiStatus').textContent=activeScreenId()==='examChallenge'
+      ?'今の答案に合わせて続けて質問できます。'
+      :(aiState.connection==='demo'?'プレビューでは教材内AI。本番配置後は生成AIがこの役をします。':'いつでも続けて質問してOK。');
   }finally{aiState.busy=false;$('aiSend').disabled=false}
 }
 
@@ -1144,7 +1183,10 @@ async function aiProactive(eventType,customPrompt=''){
   };
   const prompt=customPrompt||prompts[eventType]||'今の学習状況に合わせて短く声をかけて。';
   let data;
-  if(aiCanRealProactive()){
+  // 入試中の自発声かけは問題別の固定コーチを優先。生成AIの汎用返答を混ぜない。
+  if(c.screen==='examChallenge'){
+    data=aiLocalTutor(prompt,eventType);
+  }else if(aiCanRealProactive()){
     const r=await aiApiRequest(prompt,aiState.history.slice(-6),false);
     if(r && !r.demo && !r.needsCode && !r.error)data=r;
   }

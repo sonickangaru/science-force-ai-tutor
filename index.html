@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-<title>力の復習ラボ AI先生＋入試級 v10｜中学理科</title>
+<title>力の復習ラボ AI先生＋入試級 v12｜中学理科</title>
 <style>
 :root{
   --bg:#f5faff;--panel:#fff;--ink:#18324c;--sub:#667c91;--line:#dbe8f4;
@@ -195,7 +195,7 @@ body.exam-mode .aiNudgeBubble{display:none!important}
       <button class="btn green" id="pressureOnlyBtn">🧮 圧力だけ練習</button>
     </div>
     <div class="examHomeTeaser">
-      <div><b>🏆 早く終わる人へ：入試級チャレンジ</b><span>計算を増やすだけじゃない。誤答分析・理由説明・複数条件・記述をAI採点官と攻略する。</span></div>
+      <div><b>🏆 早く終わる人へ：入試級チャレンジ</b><span>計算を増やすだけじゃない。理由説明・複数条件・記述を入試コーチと攻略する。</span></div>
       <button class="btn warn" id="examBtn">入試級に挑む →</button>
     </div>
 
@@ -630,11 +630,6 @@ const examQs=[
   data:'物体の重さは変わらない。接地面積だけが変わる。',
   choices:['3倍になる','同じ','1/3になる','1/6になる'],ans:2,
   why:'面積は200cm²から600cm²へ3倍。力が同じなら圧力は面積に反比例するので1/3。'},
- {level:'LEVEL 5｜誤答分析',title:'この答案、どこがまずい？',type:'text',pts:15,
-  q:'ある生徒が「60Nの箱、底面積300cm²」の圧力を、60÷300＝0.2Pa と答えた。間違いを指摘し、正しい答えまで説明せよ。',
-  data:'採点ポイント：単位変換 / 式 / 正しい数値 / 単位',
-  rubric:'300cm²を0.03m²に直す必要があること。60÷0.03=2000Pa。cm²のまま圧力の式に入れた点を指摘する。',
-  model:'300cm²は0.03m²に直す必要がある。圧力＝力÷面積なので、60÷0.03＝2000Pa。'},
  {level:'LEVEL 6｜記述',title:'山でポテチがふくらむ理由',type:'text',pts:15,
   q:'未開封のポテトチップスの袋を、低い場所から高い山へ持っていくと袋がふくらむことがある。大気圧を使って説明せよ。',
   data:'「高い場所」「袋の外」「袋の中」の関係まで書けると強い。',
@@ -740,189 +735,45 @@ function makeProbe(question, checker, success, next=null, choices=null){
 }
 function assessExamText(text,q){
   const raw=String(text||'');
-  const s=normExamText(raw);
+  const title=q?.title||'';
 
-  // LEVEL 5：誤答分析
-  if(exi===4){
-    const cmSeen=/cm2|平方センチ/.test(s);
-    const saysUnitIssue = cmSeen && /(だめ|ダメ|あかん|使えない|そのまま|直す|変換|なおす)/.test(raw);
-    const m3=/m3|立方メートル/.test(s);
-    const m2=/m2|平方メートル/.test(s);
-    const convert=/0\.0*3/.test(s) || (/300/.test(s)&&/10000/.test(s));
-    const result2000=/2000/.test(s);
-    const result200=/([^0-9]|^)200([^0-9]|$)/.test(s);
-    const pa=/pa|パスカル/.test(s);
-
-    if(m2 && convert && result2000){
-      return {status:'pass',feedback:'十分！ 単位変換と計算の流れが分かってる。Paまで書けたら入試答案としてさらにきれい。'};
-    }
-
-    if((saysUnitIssue || convert) && m3){
-      return {
-        status:'probe',
-        feedback:'考え方はほぼ合ってる。cm²のままではダメと気づいてるし、0.03まで出せてる。1点だけ確認しよ。',
-        probe:makeProbe(
-          'これは「面積」の単位。0.03のあとに付くのは m² と m³、どっち？',
-          a=>/m2|m²|平方メートル/.test(normExamText(a)),
-          'そう、それでOK。面積だからm²。300cm²＝0.03m²やね。',
-          makeProbe(
-            'じゃあ最後だけ。60÷0.03 はいくつ？',
-            a=>/2000/.test(normExamText(a)),
-            'よし、理解できてる。答えは2000Pa。最初の答案は惜しいだけで、考え方はちゃんとできてた。',
-            null,
-            ['200','2000']
-          ),
-          ['m²','m³']
-        )
-      };
-    }
-
-    if(convert && result200 && !result2000){
-      return {
-        status:'probe',
-        feedback:'0.03m²までできてる。ここはもう単位変換はOK。計算だけ確認しよ。',
-        probe:makeProbe(
-          '0.03×200 と 0.03×2000、どっちが60になる？',
-          a=>/2000/.test(normExamText(a)),
-          'そう、2000。だから60÷0.03＝2000Pa。ここだけの計算ミスやったね。',
-          null,
-          ['200','2000']
-        )
-      };
-    }
-
-    if(saysUnitIssue && !convert){
-      return {
-        status:'probe',
-        feedback:'「cm²をそのまま使ったのがダメ」は正解。そこがこの問題の一番大事な見抜きやで。',
-        probe:makeProbe(
-          'じゃあ確認。300cm²は何m²？',
-          a=>/0\.0*3/.test(normExamText(a)),
-          '正解、0.03m²。そこまで分かってたら、この誤答の原因は説明できてる。',
-          makeProbe(
-            '最後に 60÷0.03 は？',
-            a=>/2000/.test(normExamText(a)),
-            'OK、2000Pa。これで満点答案の中身はそろった。',
-            null,
-            ['200','2000']
-          )
-        )
-      };
-    }
-
-    if(convert && !result2000){
-      return {
-        status:'probe',
-        feedback:'300cm²＝0.03m²までできてる。そこは合格。',
-        probe:makeProbe(
-          'じゃあ最後、60÷0.03 はいくつ？',
-          a=>/2000/.test(normExamText(a)),
-          '正解。2000Pa。単位変換も計算も分かってる。',
-          null,
-          ['200','2000']
-        )
-      };
-    }
-
-    return {
-      status:'weak',
-      feedback:'まず1個だけ見よう。圧力の式で面積に使う単位はm²。300cm²をそのまま「300」として割っていいかな？'
-    };
+  if(title.includes('ポテチ')){
+    const high=/高い|高所|山/.test(raw);
+    const lower=/大気圧.*小|大気圧.*低|圧力.*小|圧力.*低/.test(raw);
+    const inside=/中|内側|袋内/.test(raw);
+    const outside=/外|外側/.test(raw);
+    const expand=/ふくら|膨ら|外向き/.test(raw);
+    if(high&&lower&&inside&&outside&&expand)
+      return {status:'pass',feedback:'十分。高い場所では外の大気圧が小さくなり、袋の中の圧力が相対的に大きくなるのでふくらむ、までつながっている。'};
+    if(high&&lower)
+      return {status:'partial',feedback:'「高い場所ほど大気圧が小さい」までは合ってる。あと袋の中と外の圧力を比べれば完成。'};
+    return {status:'partial',feedback:'まず、高い山では大気圧が大きくなるか小さくなるかを考えよう。'};
   }
 
-  // LEVEL 6：大気圧
-  if(exi===5){
-    const high=/高い|高所|山/.test(raw), outside=/外|外側/.test(raw);
-    const lower=/小さ|低く|弱く|減/.test(raw), inside=/中|内側|袋内/.test(raw);
-    const expand=/ふくら|膨ら|外向き|広が/.test(raw);
-
-    if(high&&outside&&lower&&inside&&expand)
-      return {status:'pass',feedback:'十分。高い場所→外の大気圧が小さい→袋の中が相対的に強く押す→ふくらむ、までつながってる。'};
-
-    if(high&&lower){
-      return {
-        status:'probe',
-        feedback:'「高い山では大気圧が小さくなる」は正解。そこまで分かってたらあと1個だけ。',
-        probe:makeProbe(
-          'そのとき、袋を押す力は「中から外」と「外から中」、どっちが相対的に強くなる？',
-          a=>/中.*外|内.*外|中から外|内から外/.test(String(a)) || (/中|内/.test(a)&&/強|大/.test(a)),
-          'そう。中から外へ押す方が相対的に強くなるから、袋がふくらむ。理解できてる。'
-        )
-      };
-    }
-
-    if(/大気圧|圧力/.test(raw) && expand){
-      return {
-        status:'probe',
-        feedback:'方向は合ってる。大気圧が関係して袋がふくらむ、まではOK。',
-        probe:makeProbe(
-          '高い山では、袋の「外側」の大気圧は大きくなる？小さくなる？',
-          a=>/小|低|弱/.test(a),
-          '正解。外側の大気圧が小さくなる。そこから袋の中との圧力差でふくらむ。'
-        )
-      };
-    }
-    return {status:'weak',feedback:'まず「高い山では大気圧がどうなるか」だけ答えてみよう。そこから袋の中と外を比べればいい。'};
+  if(title.includes('雪に沈まない')){
+    const force=/力|体重|重さ/.test(raw);
+    const area=/面積|広い|広く|大き/.test(raw);
+    const pressure=/圧力/.test(raw);
+    const smaller=/小さ|低く|弱く/.test(raw);
+    if(area&&pressure&&smaller)
+      return {status:'pass',feedback:'十分。接する面積を大きくすると、同じ力でも圧力が小さくなり、雪に沈みにくくなると説明できている。'};
+    if(area)
+      return {status:'partial',feedback:'靴底を広くする考えは正解。あとは「面積が大きいほど圧力が小さくなる」とつなげればOK。'};
+    return {status:'partial',feedback:'体重はそのままでも、雪と接する面積は変えられる。そこから考えよう。'};
   }
 
-  // LEVEL 7：設計
-  if(exi===6){
-    const force=/力|体重|重さ/.test(raw), area=/面積/.test(raw), bigger=/大き|広/.test(raw);
-    const pressure=/圧力/.test(raw), smaller=/小さ|低く|弱く/.test(raw), sink=/沈みにく|沈ま/.test(raw);
-
-    if(force&&area&&bigger&&pressure&&smaller)
-      return {status:'pass',feedback:'十分。力はほぼ同じ、面積を大きくする、圧力が小さくなる、まで説明できてる。'};
-
-    if((area&&bigger) || /広い靴|広く/.test(raw)){
-      return {
-        status:'probe',
-        feedback:'靴底を広くする、は正解。設計はもう合ってる。',
-        probe:makeProbe(
-          '同じ体重で接地面積を大きくすると、雪にかかる圧力は大きくなる？小さくなる？',
-          a=>/小|低|弱/.test(a),
-          'そう、小さくなる。だから沈みにくい。これで理由まで分かってる。'
-        )
-      };
-    }
-    return {status:'weak',feedback:'体重は変えにくい。じゃあ、雪と接する「面積」はどうしたら沈みにくくなりそう？'};
-  }
-
-  // BOSS
-  if(exi===7){
+  if(title.includes('論破')){
     const example=/電車|台車|自転車|車|物体/.test(raw);
     const constant=/一定/.test(raw)&&/速/.test(raw);
     const balance=/つり合/.test(raw);
-
     if(example&&constant&&balance)
-      return {status:'pass',feedback:'十分。動いていても、一定の速さで進むときは力がつり合う場合がある、という反例を作れてる。'};
-
-    if(constant){
-      return {
-        status:'probe',
-        feedback:'「一定の速さ」を出せたのが大事。反例としてかなり良い。',
-        probe:makeProbe(
-          'そのとき進行方向と反対方向の力は、どんな関係になっている？',
-          a=>/つり合|等し|同じ/.test(a),
-          'そう、つり合っている。だから「動いている＝進む向きの力が必ず大きい」は成り立たない。'
-        )
-      };
-    }
-
-    if(balance){
-      return {
-        status:'probe',
-        feedback:'「力がつり合う」は正解。あと具体例が1個あれば十分。',
-        probe:makeProbe(
-          '動いているのに力がつり合っている例を1つ。一定の速さで走る何かを挙げてみて。',
-          a=>/電車|台車|自転車|車|物体/.test(a),
-          'OK。その例で反論できる。'
-        )
-      };
-    }
-    return {status:'weak',feedback:'「動いているのに、速さも向きも変わっていないもの」を1つ考えてみよう。'};
+      return {status:'pass',feedback:'十分。動いていても、一定の速さで進むときは力がつり合う場合がある、という反例を作れている。'};
+    if(constant)
+      return {status:'partial',feedback:'「一定の速さ」を出せたのが大事。そこに「力がつり合う場合がある」をつなげれば論破できる。'};
+    return {status:'partial',feedback:'「動いているのに、速さが変わっていないもの」を具体例にしてみよう。'};
   }
 
-  return {status:raw.length>=15?'pass':'probe',feedback:'考え方は伝わってる。あと1個だけ確認しよう。'};
+  return {status:'partial',feedback:'考え方を一言書けたらOK。'};
 }
 
 function localTextCoverage(text,q){
@@ -931,14 +782,15 @@ function localTextCoverage(text,q){
 
 function examCoachOpening(){
   const q=examQs[exi];
-  if(exi===0) return '「動いているか」ではなく、「速さや向きが変わっているか」に注目しよう。';
-  if(exi===1) return '大きさと向きが合っていても、つり合いにはもう1条件ある。';
-  if(exi===2) return 'この問題は3段階。重力→面積の単位変換→圧力。1つずつでOK。';
-  if(exi===3) return '力は同じ。変わるのは面積。圧力が何に反比例するかが勝負。';
-  if(exi===4) return 'この問題は「計算」より「誤りを見抜く」問題。まず単位を見よう。';
-  if(exi===5) return '高い山で「袋の外」の大気圧がどうなるかから始めよう。';
-  if(exi===6) return '体重は変わらない。変えられるのは雪と接する面積。';
-  return '「動いているのに力がつり合う例」を作れたら、この主張を崩せる。';
+  const t=q?.title||'';
+  if(t.includes('一定の速さ')) return '「動いているか」ではなく、「速さや向きが変わっているか」に注目しよう。';
+  if(t.includes('同じ6N')) return '大きさと向きが合っていても、つり合いにはもう1条件ある。';
+  if(t.includes('直方体を置き替える')) return '重力→面積の単位変換→圧力。3段階を1つずつでOK。';
+  if(t.includes('置き方を変えたら')) return '力は同じ。変わるのは面積。圧力との関係を見よう。';
+  if(t.includes('ポテチ')) return '高い山で「袋の外」の大気圧がどうなるかから考えよう。';
+  if(t.includes('雪に沈まない')) return '体重は変わらない。変えられるのは雪と接する面積。';
+  if(t.includes('論破')) return '「動いているのに力がつり合う例」を作れたら、この主張を崩せる。';
+  return '問題文の条件を1つずつ拾おう。';
 }
 function showExamCoach(text,source=''){
   $('examCoach').classList.add('show');
@@ -958,37 +810,20 @@ function currentExamAnswer(){
 function examCoachReply(kind='hint', userText=''){
   const q=examQs[exi];
   const ans=currentExamAnswer().trim();
+  const t=q?.title||'';
 
-  if(q.type==='text' && ans){
-    const a=assessExamText(ans,q);
-    if(kind==='why'){
-      if(exi===4) return '圧力の式は面積をm²で入れる。cm²とm²は数字の大きさが違うから、そのまま300を入れると圧力も大きくずれる。ちなみに300cm²＝0.03m²。';
-      if(exi===5) return '高い場所ほど上にある空気が少なく、袋の外から押す大気圧が小さくなるから。中の圧力が相対的に大きくなる。';
-      if(exi===6) return '力が同じなら、面積が大きいほど「1m²あたりに分かれる力」が小さくなる。だから圧力が小さくなる。';
-      if(exi===7) return '物体が動いていても、一定の速さでまっすぐなら運動のようすは変化していない。力がつり合う場合がある。';
-    }
-    if(kind==='deep'){
-      return exi===4?'追撃：300cm²を0.03m²にするとき、なぜ100ではなく10000で割る？ 長さの単位変換と面積の関係から説明してみよう。':
-             exi===5?'追撃：袋に小さな穴が開いていたら、同じように山でふくらむ？ 理由も説明して。':
-             exi===6?'追撃：同じ靴で片足立ちしたら、両足立ちと比べて雪への圧力はどうなる？':
-             '追撃：一定の速さでカーブしている車は、力がつり合っていると言える？';
-    }
-    return a.feedback;
-  }
+  if(kind==='why') return q?.why || q?.model || '条件を理科のルールにつなげると説明できる。';
 
   if(kind==='deep'){
-    return exi===0?'追撃：一定の速さで右向きに進む台車に、右向き5N・左向き5Nがはたらく。速度を2倍にした瞬間もこの2力のままでよい？':
-           exi===1?'追撃：大きさが等しく、反対向きでも、同一直線上でない2力が物体に何を起こしそうか予想してみよう。':
-           exi===2?'追撃：同じ直方体を別の面で置いたとき、計算せず圧力の大小を予想してから確かめよう。':
-           exi===3?'追撃：接地面積を半分にしたら圧力は何倍？ 式を使わず説明して。':
-           examCoachReply('deep','');
+    if(t.includes('ポテチ')) return '追撃：袋に小さな穴が開いていたら、山へ持っていったとき同じようにふくらむ？ 理由も。';
+    if(t.includes('雪に沈まない')) return '追撃：同じ靴で片足立ちと両足立ちでは、雪への圧力はどう変わる？';
+    if(t.includes('論破')) return '追撃：一定の速さでカーブしている車では、力はつり合っていると言える？';
+    return '追撃：条件を1つ変えたら答えがどう変わるか考えてみよう。';
   }
-  if(kind==='why'){
-    return q.why || '条件を力のルールや圧力の式につなげると説明できる。';
-  }
-  return q.hint || examCoachOpening();
-}
 
+  if(q?.type==='text' && ans) return assessExamText(ans,q).feedback;
+  return q?.hint || examCoachOpening();
+}
 
 function renderExamProbe(){
   const box=$('examProbeBox');
@@ -1176,9 +1011,9 @@ function finishExam(){
   const rate=examScore/max;
   let rank=rate>=.85?'S':rate>=.68?'A':rate>=.5?'B':'C';
   $('resultTitle').textContent=`入試級チャレンジ 完走｜RANK ${rank}`;
-  $('resultMsg').textContent=`${examScore} pt。入試で差がつく「理由説明・条件の見抜き・誤答分析」まで挑戦しました。`;
+  $('resultMsg').textContent=`${examScore} pt。入試で差がつく「理由説明・条件の見抜き・考察」まで挑戦しました。`;
   $('quizStat').style.display='none';$('forceStat').style.display='none';$('pressureStat').style.display='none';
-  $('resultMaster').innerHTML=`<div class="master"><b class="examRank">RANK ${rank}</b>知識を答えるだけでなく、条件を読み、理由を説明し、他人の誤答を直すところまでが入試力。</div>`;
+  $('resultMaster').innerHTML=`<div class="master"><b class="examRank">RANK ${rank}</b>知識を答えるだけでなく、条件を読み、理由を説明し、考察するところまでが入試力。</div>`;
   $('resultNext').innerHTML='<b>まだ物足りない人へ。</b><br>右下のAI先生に「この単元で高校入試の最難関級を出して」と言えば、さらに考察問題を続けられます。';
   $('retryBtn').textContent='入試級をもう一度';$('levelUpBtn').style.display='none';
 }

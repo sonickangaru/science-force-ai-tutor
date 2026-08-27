@@ -47,13 +47,14 @@ function j(data,status=200){
 }
 function env(c,n){ return c?.env?.[n] ?? globalThis?.[n] ?? undefined; }
 
-function response(reply, challenge=""){
+function response(reply, challenge="", source="fixed"){
   return {
     reply,
-    coach_move:"",          // 画面に「指導: explain」を出さない
+    coach_move:"",
     challenge,
     mastery_signal:"unknown",
-    suggested_mode:"keep"
+    suggested_mode:"keep",
+    source
   };
 }
 
@@ -148,6 +149,8 @@ function quizSpecific(ctx){
 function localTeacher(message,ctx){
   const t=String(message||"");
   const screen=ctx?.screen||"";
+  // 入試記述・入試コーチは必ず生成AIへ。固定文で会話を潰さない。
+  if(screen==="examChallenge") return null;
   const isHint=/ヒント|分から|わから|困|もう一度|声をかけ|注目|誤答|間違/.test(t);
 
   if(screen==="forceLab" && isHint) return response(forceSpecific(ctx,/誤答|間違/.test(t)?"wrong":"hint"));
@@ -185,26 +188,29 @@ function localTeacher(message,ctx){
 
 const SYSTEM = `
 あなたは日本の中学生向け理科「力」単元の個別指導教師。
-生徒の現在のゲーム画面・問題・誤答状況を必ず利用して返答する。
+現在のゲーム画面、問題、生徒答案、直前の会話履歴を必ず読んで返答する。
 
-重要:
-- 「今の問題をもう一度見よう」のような中身のない返事は禁止。
-- 今の問題に固有の数値・条件・矢印の状態が文脈にあれば、必ず1つ以上触れる。
-- ヒント希望なら答えを丸ごと言わず、一段だけ助ける。
-- 生徒の考察への返答は「判定 → 良い点 → 修正点 → 次の問い」。
-- 得意な生徒には反例・条件変更・説明・予測を使う。
+最重要ルール:
+- 同じ説明を繰り返さない。直前に同じ内容を説明済みなら、その続き・別の角度・生徒の最新発言への直接回答へ進む。
+- 生徒の答案では、まず「合っている部分」を具体的に拾う。
+- 模範答案との完全一致を要求しない。核心が理解できていれば「理解できている」と明言する。
+- 誤りは一度に最大1点だけ直す。計算ミスと概念の誤解を混同しない。
+- 生徒が質問したら、その質問に直接答える。「どこが分からない？」と聞き返して逃げない。
+- 問い返しは最大1問で、理解を深めるための任意の問い。回答を次へ進む条件にしない。
+- 「今の問題をもう一度見よう」「一緒に考えよう」だけの中身のない返事は禁止。
+- 問題に数値・単位・矢印・生徒答案がある場合、少なくとも1つ具体的に触れる。
+- 入試級でも採点を厳しくしすぎない。短い答案でも科学的な核が合っていれば認める。
+- 得意な生徒には、希望された場合だけ反例・条件変更・予測などの追撃を1問出す。
 - 日本語。自然で短め。基本80〜180字。
-- 中1範囲を基本とし、発展は発展と明示。
-- 入試級チャレンジの答案を採点するときは、採点観点を厳密に使い、正誤を曖昧にしない。
-- 正解答案にも改善点または追撃問題を1つ返して、できる生徒を止めない。
+- 中1範囲を基本とし、発展は「発展」と明示。
 - 個人情報を聞かない。
-- Markdownの大見出しや長い箇条書きは使わない。
 `;
 
 async function callModel(key,message,ctx,history){
   const advanced =
+    ctx?.screen==="examChallenge" ||
     ctx?.mode==="challenge" ||
-    /なぜ|なんで|理由|説明|考察|評価|難問|チャレンジ|反例|予想|予測/.test(message);
+    /なぜ|なんで|理由|説明|考察|評価|採点|答案|難問|チャレンジ|反例|予想|予測/.test(message);
   const model=advanced?"@makers/deepseek-v4-pro":"@makers/deepseek-v4-flash";
 
   const hist=(Array.isArray(history)?history:[]).slice(-6).map(x=>({
@@ -222,6 +228,7 @@ async function callModel(key,message,ctx,history){
     learner:ctx?.learner,
     examAnswer:ctx?.examAnswer,
     examRubric:ctx?.examRubric,
+    examModel:ctx?.examModel,
     examScore:ctx?.examScore,
     examStreak:ctx?.examStreak
   });
@@ -280,16 +287,22 @@ export async function onRequestPost(context){
     // 自由質問・考察評価のみ生成AI
     try{
       const text=await callModel(key,message,ctx,body?.history||[]);
-      if(text) return j(response(text));
+      if(text) return j(response(text,"","model"));
     }catch(e){
       console.error("Makers model error:",e);
     }
 
     // モデル失敗時も今の問題に合わせて返す
-    if(ctx?.screen==="forceLab") return j(response(forceSpecific(ctx)));
-    if(ctx?.screen==="pressureLab") return j(response(pressureSpecific(ctx)));
-    if(ctx?.screen==="quiz") return j(response(quizSpecific(ctx)));
-    return j(response("今の内容で、どこが引っかかったかを一言で教えて。そこだけ狙って説明するで。"));
+    if(ctx?.screen==="forceLab") return j(response(forceSpecific(ctx),"","fallback"));
+    if(ctx?.screen==="pressureLab") return j(response(pressureSpecific(ctx),"","fallback"));
+    if(ctx?.screen==="quiz") return j(response(quizSpecific(ctx),"","fallback"));
+    if(ctx?.screen==="examChallenge"){
+      const fb=ctx?.examRubric
+        ? `AI接続が一時的に失敗しました。教材側の確認だけ出します：${String(ctx.examRubric).slice(0,220)}`
+        : "AI接続が一時的に失敗しました。次へ進むことはできます。";
+      return j(response(fb,"","fallback"));
+    }
+    return j(response("AI接続が一時的に失敗しました。もう一度送ってください。","","fallback"));
   }catch(e){
     console.error(e);
     return j({error:"AI先生の通信でエラーが起きました。"},500);

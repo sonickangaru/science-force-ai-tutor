@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-<title>力の復習ラボ AI先生＋入試級｜中学理科</title>
+<title>力の復習ラボ AI先生＋入試級 v5｜中学理科</title>
 <style>
 :root{
   --bg:#f5faff;--panel:#fff;--ink:#18324c;--sub:#667c91;--line:#dbe8f4;
@@ -224,7 +224,7 @@ h2{font-size:clamp(23px,3vw,34px);margin:8px 0 13px}.prompt{font-size:19px;line-
   <div class="examHero">
     <span class="tag" style="background:rgba(255,255,255,.15);color:#fff;border-color:transparent">🏆 入試級チャレンジ｜オリジナル問題</span>
     <h2>「解ける」から、「説明できる」へ。</h2>
-    <p>中1「力」の知識だけで挑める入試レベル。AI採点官は、正解でも容赦なく「なぜ？」を返します。</p>
+    <p>中1「力」の知識だけで挑める入試レベル。採点官は答案の不足を具体的に返し、合格答案はAIがさらに磨きます。</p>
     <div class="examStats"><span class="examStat" id="examProgress">1 / 8</span><span class="examStat" id="examScore">0 pt</span><span class="examStat" id="examStreak">連続正解 0</span></div>
   </div>
   <div class="examCard" id="examCard">
@@ -614,7 +614,7 @@ function renderExamAnswer(q){
     a.innerHTML=`<div class="examNumRow"><input id="examNum" class="examNum" inputmode="decimal" placeholder="数値を入力"><b>${q.unit||''}</b><button class="btn primary" id="examJudgeNum">判定</button></div>`;
     $('examJudgeNum').onclick=judgeExamNumber;$('examNum').addEventListener('keydown',e=>{if(e.key==='Enter')judgeExamNumber()});
   }else{
-    a.innerHTML=`<textarea id="examText" class="examAnswer" placeholder="自分の言葉で説明しよう。短くてもOK。"></textarea><div style="margin-top:9px"><button class="btn primary" id="examGradeText">🤖 AI採点官に提出</button></div>`;
+    a.innerHTML=`<textarea id="examText" class="examAnswer" placeholder="自分の言葉で説明しよう。短くてもOK。"></textarea><div style="margin-top:9px"><button class="btn primary" id="examGradeText">🤖 採点官に提出</button></div>`;
     $('examGradeText').onclick=gradeExamText;
   }
 }
@@ -635,38 +635,207 @@ function judgeExamNumber(){
   if(Math.abs(v-q.ans)<1e-9)examGood(q,q.why);
   else{examStreak=0;$('examStreak').textContent='連続正解 0';$('examFeedback').className='examFeedback show bad';$('examFeedback').innerHTML=`<b>まだ違う。</b><br>${examAttempts>=2?escapeHtml(q.why):escapeHtml(q.hint||'式と単位を確認しよう。')}`}
 }
-function localTextCoverage(text,q){
-  const s=text.replace(/\s/g,'').toLowerCase();
-  if(exi===4) return ((/0\.03/.test(s)||/0.03/.test(s))&&/2000/.test(s)&&(s.includes('m²')||s.includes('m2')||s.includes('平方メートル')));
-  if(exi===5) return /高|山/.test(s) && /大気圧|圧力/.test(s) && /小|低/.test(s) && /中|内/.test(s) && /外/.test(s);
-  if(exi===6) return /面積/.test(s)&&/大き|広/.test(s)&&/圧力/.test(s)&&/小/.test(s)&&/力/.test(s);
-  if(exi===7) return /一定/.test(s)&&/速/.test(s)&&/つり合/.test(s);
-  return s.length>=25;
-}
-async function gradeExamText(){
-  if(examSolved)return;const q=examQs[exi],text=$('examText').value.trim();
-  if(text.length<6){$('examFeedback').className='examFeedback show bad';$('examFeedback').innerHTML='<b>もう一声。</b><br>短くていいので、理由まで書いてみよう。';return}
-  examAttempts++;$('examFeedback').className='examFeedback show ai';$('examFeedback').innerHTML='<b>🤖 AI採点官が採点中…</b><br>正解かどうかだけでなく、説明の筋を見ています。';
-  let feedback='';
-  try{
-    const prompt=`【入試記述の採点】\n問題：${q.q}\n採点観点：${q.rubric}\n生徒答案：${text}\n\n中学生に返す。最初に「満点級」「あと一歩」「再考」のどれかで判定し、良い点→足りない点→よりよい短い答案例→最後に追撃の一問、の順で150〜260字程度。`;
-    const prior=aiState.history.slice(-4);
-    const r=await aiApiRequest(prompt,prior,true);
-    if(r && !r.error && !r.demo && !r.needsCode) feedback=cleanAiReply(r.reply||'');
-  }catch(_){}
-  if(!feedback){
-    feedback=localTextCoverage(text,q)
-      ? `満点級。必要な考え方が入っている。さらに答案を締めるなら、因果関係を「だから」で1文につなぐと強い。答案例：${q.model}`
-      : `あと一歩。方向はいいけど、採点者に伝わる条件が不足している。入れたい核はこれ：${q.rubric}　答案例：${q.model}`;
+function assessExamText(text,q){
+  const raw=String(text||'');
+  const s=raw.replace(/\s/g,'').toLowerCase();
+  const has=(re)=>re.test(s);
+
+  // LEVEL 5：誤答分析
+  if(exi===4){
+    const unitProblem = /cm²|cm2|平方センチ|単位|m²|m2|平方メートル/.test(raw);
+    const convert = /0[\.．]03/.test(s) || (/300/.test(s)&&/10000/.test(s));
+    const formula = /60/.test(s) && (/0[\.．]03/.test(s)||/力.*面積|圧力.*力/.test(raw));
+    const result = /2000/.test(s);
+    const pa = /pa|パスカル/i.test(raw);
+
+    if(convert && result && pa){
+      return {
+        status:'pass',
+        feedback:'満点級。cm²のまま式に入れた誤りを直し、300cm²＝0.03m²、60÷0.03＝2000Paまでつながっている。あとは「なぜcm²のままではダメか」を一言添えると、さらに採点者に伝わる答案になる。'
+      };
+    }
+    if(unitProblem && !convert){
+      return {
+        status:'partial',
+        feedback:'そこは合ってる！ 間違いの原因は「300cm²をそのまま使ったこと」。ただ、入試答案は原因を言うだけでは点を取り切れない。次は 300cm² を m² に直してみよう。ヒント：1m²＝10000cm²。'
+      };
+    }
+    if(convert && !result){
+      return {
+        status:'partial',
+        feedback:'いい、単位変換は突破。300cm²＝0.03m² まで書けている。次は圧力＝力÷面積に入れて、60÷0.03 を計算しよう。最後はPaまで書けば完成。'
+      };
+    }
+    if(result && !convert){
+      return {
+        status:'partial',
+        feedback:'2000という数値には近づいている。でも「なぜそうなるか」が答案から見えない。300cm²＝0.03m² と単位変換を書いてから、60÷0.03＝2000Pa とつなげよう。'
+      };
+    }
+    return {
+      status:'weak',
+      feedback:'まず誤りを1個だけ特定しよう。圧力の式で面積に使える単位は m²。問題の300cm²を、そのまま「300」として割ってよいかを考えてみよう。'
+    };
   }
-  const pass=localTextCoverage(text,q);
-  if(pass){
-    examGood(q,feedback);
-  }else{
+
+  // LEVEL 6：大気圧
+  if(exi===5){
+    const high = /高い|高所|山/.test(raw);
+    const outside = /外|外側/.test(raw);
+    const lower = /小さ|低く|弱く|減/.test(raw);
+    const inside = /中|内側|袋内/.test(raw);
+    const expand = /ふくら|膨ら|外向き|広が/.test(raw);
+
+    if(high && outside && lower && inside && expand){
+      return {
+        status:'pass',
+        feedback:'満点級。「高い場所ほど外側の大気圧が小さい」→「袋の中の圧力が相対的に大きい」→「外向きにふくらむ」という因果がつながっている。'
+      };
+    }
+    if(high && lower && !inside){
+      return {
+        status:'partial',
+        feedback:'前半はいい！ 「高い山では大気圧が小さくなる」は正しい。あと一歩、袋の“外”だけでなく“中”の圧力と比べると、なぜ袋がふくらむかまで説明できる。'
+      };
+    }
+    if(/大気圧|圧力/.test(raw) && expand){
+      return {
+        status:'partial',
+        feedback:'方向は合ってる。入試答案では「どこの圧力がどう変わるか」を具体化しよう。高い場所では袋の外の大気圧がどうなる？ そのとき袋の中との大小関係は？'
+      };
+    }
+    return {
+      status:'weak',
+      feedback:'「高い山では大気圧がどうなるか」から始めよう。次に、袋の外側の圧力と袋の中の圧力を比べると説明しやすい。'
+    };
+  }
+
+  // LEVEL 7：設計
+  if(exi===6){
+    const force = /力|体重|重さ/.test(raw);
+    const area = /面積/.test(raw);
+    const bigger = /大き|広く|広い/.test(raw);
+    const pressure = /圧力/.test(raw);
+    const smaller = /小さ|低く|弱く/.test(raw);
+    const sink = /沈みにく|沈ま/.test(raw);
+
+    if(force && area && bigger && pressure && smaller && sink){
+      return {
+        status:'pass',
+        feedback:'満点級。「力は同じ」→「接地面積を大きくする」→「圧力が小さくなる」→「沈みにくい」の流れができている。条件と結果がきれいにつながっている。'
+      };
+    }
+    if(area && bigger && pressure && !smaller){
+      return {
+        status:'partial',
+        feedback:'設計は正しい。靴底を広くして面積を大きくするところまでOK。次は、力が同じなら圧力＝力÷面積より圧力がどう変わるかを書こう。'
+      };
+    }
+    if(/広|大き/.test(raw) && !area){
+      return {
+        status:'partial',
+        feedback:'「靴を広くする」は正解方向。ただ、入試では科学の言葉に変換したい。「雪と接する面積を大きくする」と書き、圧力がどうなるかまでつなげよう。'
+      };
+    }
+    return {
+      status:'weak',
+      feedback:'体重そのものは変えられない。変えられるのは雪と接する「面積」。圧力＝力÷面積から、どんな靴底がよいか考えよう。'
+    };
+  }
+
+  // BOSS：反例
+  if(exi===7){
+    const example = /電車|台車|自転車|車|物体/.test(raw);
+    const constant = /一定/.test(raw) && /速/.test(raw);
+    const straight = /まっすぐ|直線/.test(raw);
+    const balance = /つり合/.test(raw);
+    const refute = /必ず|とはいえ|間違|正しくない|大きいとは/.test(raw);
+
+    if(example && constant && balance && (straight || refute)){
+      return {
+        status:'pass',
+        feedback:'満点級。具体的な反例を出し、「動いていても一定の速さでまっすぐなら力がつり合う場合がある」と説明できている。これで“必ず右向きが大きい”を論破できる。'
+      };
+    }
+    if(constant && !balance){
+      return {
+        status:'partial',
+        feedback:'「一定の速さ」を出せたのがかなり良い。あと、なぜそれが反例になるかを書くために「力のつり合い」という語をつなげよう。'
+      };
+    }
+    if(balance && !constant){
+      return {
+        status:'partial',
+        feedback:'「力がつり合う」は大事。ただ、動いている反例にするため、例えば「まっすぐ一定の速さで走る電車」のような具体例を置こう。'
+      };
+    }
+    return {
+      status:'weak',
+      feedback:'反例を1つ作ろう。「動いているのに、運動のようすが変わっていないもの」はないかな？ “一定の速さでまっすぐ”がキーワード。'
+    };
+  }
+
+  return {
+    status: raw.length>=25 ? 'pass' : 'partial',
+    feedback: raw.length>=25 ? '考え方は伝わっている。' : 'もう少し理由まで書いてみよう。'
+  };
+}
+
+function localTextCoverage(text,q){
+  return assessExamText(text,q).status==='pass';
+}
+
+async function gradeExamText(){
+  if(examSolved)return;
+  const q=examQs[exi],text=$('examText').value.trim();
+
+  if(text.length<4){
+    $('examFeedback').className='examFeedback show bad';
+    $('examFeedback').innerHTML='<b>まず一言でOK。</b><br>「何が間違い？」「何が原因？」のどちらかだけでも書いてみよう。';
+    return;
+  }
+
+  examAttempts++;
+  const assessment=assessExamText(text,q);
+
+  // 不十分な答案は、AIガチャにせず採点基準からピンポイントで返す
+  if(assessment.status!=='pass'){
     examStreak=0;$('examStreak').textContent='連続正解 0';
     $('examFeedback').className='examFeedback show ai';
-    $('examFeedback').innerHTML=`<b>🤖 AI採点官：再提出できる。</b><br>${escapeHtml(feedback)}`;
+    $('examFeedback').innerHTML=`<b>🤖 採点官：${assessment.status==='partial'?'あと一歩':'再考'}。再提出できる。</b><br>${escapeHtml(assessment.feedback)}`;
+    return;
   }
+
+  // 必要事項を満たしてから、AIには「表現の質・深掘り」を見てもらう
+  $('examFeedback').className='examFeedback show ai';
+  $('examFeedback').innerHTML='<b>🤖 AI採点官：内容は合格ライン。答案の質を最終確認中…</b>';
+
+  let aiFeedback='';
+  try{
+    const prompt=`【入試記述の最終講評】
+問題：${q.q}
+採点観点：${q.rubric}
+生徒答案：${text}
+
+この答案は必要な科学内容を満たしている。否定から入らず、
+①良い点
+②より採点者に伝わる改善を1点
+③短い模範答案
+④さらに考える追撃の一問
+の順で、日本の中学生向けに120〜220字で返して。`;
+    const prior=aiState.history.slice(-3);
+    const r=await aiApiRequest(prompt,prior,true);
+    if(r && !r.error && !r.demo && !r.needsCode){
+      const cleaned=cleanAiReply(r.reply||'');
+      // 中身のない定型返答は採用しない
+      if(cleaned.length>=35 && !/どこが引っかかった|もう一度.*見|一緒に.*見/.test(cleaned)){
+        aiFeedback=cleaned;
+      }
+    }
+  }catch(_){}
+
+  const finalFeedback=aiFeedback || `${assessment.feedback} 模範答案：${q.model}`;
+  examGood(q,finalFeedback);
 }
 $('examNextBtn').onclick=()=>{exi++;loadExam()};
 $('examAiBtn').onclick=()=>{

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<title>力の復習ラボ ULTRA｜個別最適・達成画面</title>
+<title>力の復習ラボ ULTRA v3｜一本道・個別最適</title>
 <style>
 :root{
   --bg:#f4f9ff;--panel:#fff;--ink:#18324c;--sub:#667b90;--line:#dbe6f1;
@@ -92,11 +92,48 @@ h2{font-size:clamp(24px,3.5vw,36px);margin:8px 0 12px}.lead{font-size:17px;line-
  .headerAchieve{font-size:12px;padding:7px 9px}.masteryMini{grid-template-columns:1fr}
 }
 
+
+/* ===== v3 Guided Flow ===== */
+.startHero{text-align:center;padding:34px 30px}
+.startHero h1{font-size:clamp(36px,5vw,58px);margin:10px 0 14px}
+.startHero .lead{max-width:760px;margin:0 auto 22px}
+.bigStart{font-size:21px;padding:16px 34px;border-radius:18px;box-shadow:0 10px 28px rgba(37,107,253,.20)}
+.homeMiniRow{display:flex;justify-content:center;gap:9px;flex-wrap:wrap;margin-top:12px}
+.deepMenu{margin-top:22px;border:1px solid var(--line);border-radius:18px;background:#fbfdff;overflow:hidden;text-align:left}
+.deepMenu summary{cursor:pointer;list-style:none;padding:15px 18px;font-weight:1000;color:#4b6378}
+.deepMenu summary::-webkit-details-marker{display:none}
+.deepMenu summary:after{content:"＋";float:right;font-size:20px}
+.deepMenu[open] summary:after{content:"－"}
+.deepMenu .menuGrid{margin:0;padding:0 16px 16px}
+.flowCard{max-width:900px;margin:auto}
+.flowStep{font-size:12px;font-weight:1000;color:#6e8193;letter-spacing:.08em;margin-bottom:8px}
+.flowChoices{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:20px 0}
+.flowChoice{border:2px solid var(--line);border-radius:20px;background:#fff;padding:22px;text-align:left}
+.flowChoice:hover{border-color:#9dbcf6;transform:translateY(-1px)}
+.flowChoice .ico{font-size:34px}.flowChoice h3{font-size:22px;margin:8px 0 6px}.flowChoice p{margin:0;color:#667b90;line-height:1.6;font-size:14px}
+.flowChoice.easy{background:linear-gradient(#fff,#effdf6)}
+.flowChoice.challenge{background:linear-gradient(#fff,#fff7ed)}
+.flowTwo{grid-template-columns:repeat(2,1fr)}
+.flowPraise{text-align:center;padding:38px 24px}
+.flowPraise .emoji{font-size:58px}.flowPraise h2{font-size:clamp(30px,4vw,44px)}.flowPraise p{max-width:700px;margin:0 auto 20px;line-height:1.8;color:#5f7589;font-size:17px}
+.lengthPick{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:18px 0}
+.lengthChoice{border:2px solid #dbe5ef;background:#fff;border-radius:16px;padding:17px 10px;text-align:center;font-weight:1000}
+.lengthChoice b{display:block;font-size:22px;margin-bottom:4px}.lengthChoice span{font-size:12px;color:#6e8193}
+.lengthChoice.active{border-color:var(--blue);background:#eef5ff;color:#215db8}
+.sourceBox{margin-top:13px;padding:12px 14px;border-radius:14px;background:#f8f5ff;border:1px solid #ded5f3;color:#5d527d;line-height:1.55;font-size:12px}
+.sourceBox a{color:#4e62bc;font-weight:900}
+.realExamHero{background:linear-gradient(135deg,#18243d,#473365)}
+.modeCapNote{margin-top:10px;padding:10px 12px;border-radius:13px;background:#f5f8fb;border:1px solid #dfe7ee;color:#5e7487;font-size:13px;line-height:1.55}
+@media(max-width:800px){
+ .flowChoices,.flowTwo,.lengthPick{grid-template-columns:1fr}
+ .startHero{padding:25px 18px}
+}
+
 </style>
 </head>
 <body>
 <header><div class="head">
-  <div class="brand"><span class="brandIcon">🧲</span><span>力の復習ラボ <b>ULTRA</b></span></div>
+  <div class="brand"><span class="brandIcon">🧲</span><span>力の復習ラボ <b>ULTRA v3</b></span></div>
   <div class="progress">
     <div class="progressTop"><span id="progressLabel">スタート</span><span id="progressCount"></span></div>
     <div class="bar"><div id="progressBar"></div></div>
@@ -104,31 +141,77 @@ h2{font-size:clamp(24px,3.5vw,36px);margin:8px 0 12px}.lead{font-size:17px;line-
 </div></header>
 <main>
 <section id="home" class="screen active">
-  <div class="panel hero">
-    <span class="tag">中1「力」総復習｜個別最適・通信なし・AIなし</span>
-    <h1>わかる・描ける・計算できる。<br>最後は入試級まで。</h1>
-    <p>説明を読み直すだけでも、演習だけでもOK。矢印、つり合い、ばね、質量と重さ、圧力まで一つにまとめました。</p>
-    <div class="modeGrid">
-      <button class="mode easy active" data-mode="easy"><div class="ico">🌱</div><h3>やさしい</h3><p>ヒント多め。式も途中まで出す。間違えても必ず進める。</p></button>
-      <button class="mode" data-mode="normal"><div class="ico">✏️</div><h3>標準</h3><p>必要なヒントだけ。自分で考える時間をしっかり取る。</p></button>
-      <button class="mode challenge" data-mode="challenge"><div class="ico">🔥</div><h3>挑戦</h3><p>基礎は高速。考察・複数条件・入試級を多めに。</p></button>
+  <div class="panel startHero">
+    <span class="tag">中1「力」総復習｜個別最適・AIなし</span>
+    <h1>今日は、ここから。</h1>
+    <p class="lead">最初に難易度を選ぶだけ。あとは「説明がいるか」「何問やるか」を決めたら、今の自分に合う問題が自動で出ます。</p>
+    <button class="btn primary bigStart" id="guidedStart">▶ 今日の復習をはじめる</button>
+    <div class="homeMiniRow">
+      <button class="btn warn" id="homeAchievement">📸 今日の達成を見る</button>
+      <span class="stat" id="todayMini">今日 0問</span>
+      <span class="stat">問題バンク <b id="bankCountHome">216問</b></span>
     </div>
-    <div class="menuGrid">
-      <button class="menuCard" id="lessonStart"><div class="ico">📘</div><div><b>説明から復習</b><span>力のはたらき→矢印→つり合い→ばね→質量と重さ→圧力→大気圧。</span></div></button>
-      <button class="menuCard" id="practiceStart"><div class="ico">🧠</div><div><b>個別最適ラボ</b><span>12・25・40問／エンドレス。ミスした型は類題、連続正解なら自動で難しくなる。</span></div></button>
-      <button class="menuCard" id="arrowStart"><div class="ico">↗️</div><div><b>矢印実技</b><span>作用点・向き・大きさをドラッグで。生活場面＋つり合いまで10問。</span></div></button>
-      <button class="menuCard" id="pressureStart"><div class="ico">🧮</div><div><b>圧力計算</b><span>力÷面積。cm²→m²も含めて、詰まったら式まで出す。</span></div></button>
-      <button class="menuCard" id="springStart"><div class="ico">🪀</div><div><b>ばね・質量と重さ</b><span>フックの法則、グラフ、地球と月、ばねばかりと上皿てんびん。</span></div></button>
-      <button class="menuCard" id="examStart"><div class="ico">🏆</div><div><b>入試級チャレンジ</b><span>一定速度・つり合い・実験データ・圧力・記述。記述は1回で次へ。</span></div></button>
+
+    <div class="nameRow" style="justify-content:center;margin-top:18px">
+      <b>ロイロ提出用：</b><input class="nameInput" id="studentName" placeholder="名前・出席番号など（任意）">
     </div>
-    <div class="bankBanner">
-  <div><b>🧠 問題バンク <span id="bankCountHome">180+</span>問 ＋ 実技</b><br><span>教材の基本型をもとに、生活場面・類題・計算・考察・入試級へ展開。間違えた型は自動で類題が増えます。</span></div>
-  <span id="todayMini">今日 0問</span>
-</div>
-<div class="nameRow"><b>ロイロ提出用：</b><input class="nameInput" id="studentName" placeholder="名前・出席番号など（任意）"><span style="color:#718599;font-size:12px">この端末内だけに保存</span></div>
-<div class="notice"><b>個別最適化：</b> 苦手な型は似た問題を連続で。連続正解すると自動で難度UP。得意な人には入試級・考察問題が混ざります。外部通信・AIは使いません。</div>
+
+    <details class="deepMenu">
+      <summary>🔬 あとで、好きなところにこだわる</summary>
+      <div class="menuGrid">
+        <button class="menuCard" id="arrowStart"><div class="ico">↗️</div><div><b>矢印実技</b><span>作用点・向き・大きさをドラッグ。矢印だけ徹底したい人へ。</span></div></button>
+        <button class="menuCard" id="pressureStart"><div class="ico">🧮</div><div><b>圧力計算</b><span>力÷面積、cm²→m²を集中練習。圧力だけ鍛えたい人へ。</span></div></button>
+        <button class="menuCard" id="springStart"><div class="ico">🪀</div><div><b>ばね・質量と重さ</b><span>比例・フックの法則・月での重さを集中練習。</span></div></button>
+        <button class="menuCard" id="examStart"><div class="ico">🏆</div><div><b>実在入試チャレンジ</b><span>FdData収録の公立高校入試を、出題県・出典付きで挑戦。</span></div></button>
+      </div>
+    </details>
   </div>
 </section>
+
+
+<section id="flowDifficulty" class="screen"><div class="panel flowCard">
+  <div class="flowStep">STEP 1 / 3　難易度</div>
+  <h2>今日は、どのコースでいく？</h2>
+  <p class="lead">これは「最初の難しさ」と「最高難度」を決めます。途中で連続正解しても、選んだコースの上限を超えません。</p>
+  <div class="flowChoices">
+    <button class="flowChoice easy" data-flow-mode="easy"><div class="ico">🌱</div><h3>やさしい</h3><p>★1から。例題を見ながらOK。ミスした型は類題をたっぷり。</p><div class="modeCapNote"><b>最高 ★2まで</b><br>突然むずかしくならない。</div></button>
+    <button class="flowChoice" data-flow-mode="normal"><div class="ico">✏️</div><h3>標準</h3><p>★2から。基本→少しひねった問題へ。必要なときだけヒント。</p><div class="modeCapNote"><b>最高 ★3まで</b><br>定期テスト～標準応用。</div></button>
+    <button class="flowChoice challenge" data-flow-mode="challenge"><div class="ico">🔥</div><h3>挑戦</h3><p>★3から。連続正解すると考察・多段階計算・難問へ。</p><div class="modeCapNote"><b>最高 ★5まで</b><br>骨のある問題まで解禁。</div></button>
+  </div>
+  <div class="nav"><button class="btn ghost" onclick="goHome()">戻る</button></div>
+</div></section>
+
+<section id="flowExplain" class="screen"><div class="panel flowCard">
+  <div class="flowStep">STEP 2 / 3　説明</div>
+  <h2>最初に説明、いる？</h2>
+  <p class="lead">忘れていても大丈夫。説明を受けるなら、力のはたらきから圧力・大気圧まで8枚で思い出してから問題へ。</p>
+  <div class="flowChoices flowTwo">
+    <button class="flowChoice easy" id="withLesson"><div class="ico">📘</div><h3>説明を受ける</h3><p>「そうやった！」を思い出してから問題へ。苦手・久しぶりならこっち。</p></button>
+    <button class="flowChoice" id="skipLesson"><div class="ico">⚡</div><h3>すぐ問題へ</h3><p>説明は飛ばしてOK。問題中のヒント・例題はいつでも使える。</p></button>
+  </div>
+  <div class="nav"><button class="btn ghost" id="backToDifficulty">← 難易度に戻る</button></div>
+</div></section>
+
+<section id="flowCount" class="screen"><div class="panel flowCard">
+  <div class="flowStep">STEP 3 / 3　問題数</div>
+  <h2>今日は、何問いく？</h2>
+  <p class="lead">少なくてもえらい。多くてもえらい。途中で「ここまで」にして達成画面を出すこともできます。</p>
+  <div class="lengthPick" id="flowLengthChoices">
+    <button class="lengthChoice" data-flow-length="12"><b>12問</b><span>お手軽</span></button>
+    <button class="lengthChoice active" data-flow-length="25"><b>25問</b><span>しっかり</span></button>
+    <button class="lengthChoice" data-flow-length="40"><b>40問</b><span>がっつり</span></button>
+    <button class="lengthChoice" data-flow-length="9999" data-endless="1"><b>∞</b><span>エンドレス</span></button>
+  </div>
+  <div class="nav"><button class="btn ghost" id="backToExplain">← 戻る</button><button class="btn primary" id="flowCountNext">これでいく →</button></div>
+</div></section>
+
+<section id="flowPraise" class="screen"><div class="panel flowPraise flowCard">
+  <div class="emoji" id="praiseEmoji">🙌</div>
+  <h2 id="praiseTitle">いいね。いける。</h2>
+  <p id="praiseText"></p>
+  <button class="btn primary bigStart" id="praiseStart">よし、始める！ →</button>
+  <div style="margin-top:12px"><button class="btn ghost" id="praiseBack">問題数を変える</button></div>
+</div></section>
 
 <section id="lesson" class="screen"><div class="panel">
   <div class="topline"><span class="tag" id="lessonUnit"></span><span class="tag" id="lessonNum"></span></div>
@@ -144,7 +227,7 @@ h2{font-size:clamp(24px,3.5vw,36px);margin:8px 0 12px}.lead{font-size:17px;line-
 <section id="adaptiveSetup" class="screen"><div class="panel">
   <div class="topline"><span class="tag">個別最適ラボ</span><span class="tag" id="setupModeTag"></span></div>
   <h2>今日のトレーニングを決める</h2>
-  <p class="lead">途中で間違えた単元は、似た問題が自動で追加されます。得意なら勝手に難しくなります。</p>
+  <p class="lead">途中で間違えた単元は、似た問題が自動で追加されます。得意なら、選んだコースの上限まで段階的に難しくなります。</p>
   <div class="adaptiveGrid">
     <div class="setupBox"><h3>① どこをやる？</h3><div class="setupOptions" id="focusOptions"></div></div>
     <div class="setupBox"><h3>② どれくらいやる？</h3><div class="setupOptions" id="lengthOptions"></div></div>
@@ -228,9 +311,9 @@ h2{font-size:clamp(24px,3.5vw,36px);margin:8px 0 12px}.lead{font-size:17px;line-
 </div></section>
 
 <section id="exam" class="screen"><div class="panel">
-  <div class="examHero"><div class="examMeta"><span id="examLevel"></span><span id="examCount"></span><span id="examScore"></span></div><h2 id="examTitle"></h2><p>オリジナル入試級。基礎知識を使って、条件を見抜く・説明するところまで。</p></div>
+  <div class="examHero realExamHero"><div class="examMeta"><span id="examLevel"></span><span id="examCount"></span><span id="examScore"></span></div><h2 id="examTitle"></h2><p>実際の公立高校入試を、画面で解きやすいように表現を整理。各問に出題県とFdData収録ページを表示します。</p></div>
   <div class="prompt" id="examPrompt"></div>
-  <div id="examData"></div>
+  <div id="examData"></div><div id="examSource" class="sourceBox"></div>
   <div id="examAnswer"></div>
   <div class="feedback" id="examFeedback"></div>
   <div class="nav"><button class="btn ghost" onclick="goHome()">最初に戻る</button><div><button class="btn warn" id="examReveal">解説を見る</button> <button class="btn primary" id="examNext" style="display:none">次へ →</button></div></div>
@@ -268,13 +351,11 @@ h2{font-size:clamp(24px,3.5vw,36px);margin:8px 0 12px}.lead{font-size:17px;line-
 
 <script>
 const $=id=>document.getElementById(id);
-let mode='easy';
+let mode=localStorage.getItem('forcePowerMode')||'easy';
 const modeName=()=>mode==='easy'?'やさしい':mode==='normal'?'標準':'挑戦';
 const show=id=>{document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));$(id).classList.add('active');window.scrollTo({top:0,behavior:'instant'})};
 function setProgress(label,pct,count=''){$('progressLabel').textContent=label;$('progressCount').textContent=count;$('progressBar').style.width=Math.max(0,Math.min(100,pct))+'%'}
 function goHome(){show('home');setProgress('スタート',0,'');document.body.classList.remove('exam-mode')}
-document.querySelectorAll('.mode').forEach(b=>b.onclick=()=>{document.querySelectorAll('.mode').forEach(x=>x.classList.remove('active'));b.classList.add('active');mode=b.dataset.mode;localStorage.setItem('forcePowerMode',mode)});
-const savedMode=localStorage.getItem('forcePowerMode');if(savedMode){const b=document.querySelector(`.mode[data-mode="${savedMode}"]`);if(b)b.click()}
 
 const LESSONS=[
  {unit:'① 力のはたらき',title:'力は何をしている？',lead:'力には大きく3つのはたらきがあります。まずはここを思い出せば、後の問題がかなり楽になります。',
@@ -313,8 +394,8 @@ const LESSONS=[
 
 let lessonIndex=0;
 function startLessons(){lessonIndex=0;loadLesson()}
-function loadLesson(){const l=LESSONS[lessonIndex];show('lesson');setProgress('説明から復習',lessonIndex/LESSONS.length*100,`${lessonIndex+1}/${LESSONS.length}`);$('lessonUnit').textContent=l.unit;$('lessonNum').textContent=modeName();$('lessonTitle').textContent=l.title;$('lessonLead').textContent=l.lead;$('lessonCards').innerHTML=l.cards.map(c=>`<div class="lessonCard"><b>${c[0]}</b><p>${c[1]}</p></div>`).join('');$('lessonStory').innerHTML=`<b>つながる小話：</b> ${l.story}`;$('lessonRemember').innerHTML=`<b>今日の一文：</b> ${l.remember}`;$('lessonNext').textContent=lessonIndex===LESSONS.length-1?'強化演習へ →':'次へ →'}
-$('lessonNext').onclick=()=>{lessonIndex++;if(lessonIndex>=LESSONS.length){startPractice()}else loadLesson()};
+function loadLesson(){const l=LESSONS[lessonIndex];show('lesson');setProgress('説明から復習',lessonIndex/LESSONS.length*100,`${lessonIndex+1}/${LESSONS.length}`);$('lessonUnit').textContent=l.unit;$('lessonNum').textContent=modeName();$('lessonTitle').textContent=l.title;$('lessonLead').textContent=l.lead;$('lessonCards').innerHTML=l.cards.map(c=>`<div class="lessonCard"><b>${c[0]}</b><p>${c[1]}</p></div>`).join('');$('lessonStory').innerHTML=`<b>つながる小話：</b> ${l.story}`;$('lessonRemember').innerHTML=`<b>今日の一文：</b> ${l.remember}`;$('lessonNext').textContent=lessonIndex===LESSONS.length-1?'問題数を選ぶ →':'次へ →'}
+$('lessonNext').onclick=()=>{lessonIndex++;if(lessonIndex>=LESSONS.length){showFlowCount()}else loadLesson()};
 
 
 /* ===== 大問題バンク + 個別最適化 ===== */
@@ -438,7 +519,7 @@ function buildMegaBank(){
   ].forEach((x,i)=>add(mc('圧力','圧力比較',2+i%2,'圧力を比べる',x[0],x[1],x[2],'力が同じなら圧力は面積が大きいほど小さい。',x[1][x[2]]+'。','圧力＝力÷面積。')));
   [[600,200],[800,400],[1200,300],[1500,500]].forEach((v,i)=>{
     const mass=v[0], areaCm=v[1], force=mass/100, area=areaCm/10000, ans=force/area;
-    add(num('圧力','質量→重力→圧力',4,'多段階圧力',`質量${mass}gの物体を、面積${areaCm}cm²の面を下にして置く。100g→1Nとして圧力は？`,ans,'Pa',`①重力${force}N ②${areaCm}cm²＝${area}m² ③力÷面積。`,`${force}÷${area}＝${ans}Pa。`,'入試級：質量→重力、cm²→m²、最後に圧力。'));
+    add(num('圧力','質量→重力→圧力',4,'多段階圧力',`質量${mass}gの物体を、面積${areaCm}cm²の面を下にして置く。100g→1Nとして圧力は？`,ans,'Pa',`①重力${force}N ②${areaCm}cm²＝${area}m² ③力÷面積。`,`${force}÷${area}＝${ans}Pa。`,'難問：質量→重力、cm²→m²、最後に圧力。'));
   });
   add(txt('圧力','圧力記述',4,'雪に沈まない靴','同じ体重の人が雪に沈みにくくなる靴を設計したい。「力・面積・圧力」を使って説明しよう。',['面積','圧力','小'],'体重による力はほぼ同じなので、靴底を広くして雪と接する面積を大きくする。すると圧力が小さくなり、沈みにくくなる。','面積を大きくしたとき圧力がどうなるか。','考え方が合っていれば短くてもOK。'));
 
@@ -456,7 +537,7 @@ function buildMegaBank(){
   add(txt('大気圧','大気圧記述',4,'ポテチがふくらむ','未開封のポテトチップスの袋を高い山へ持っていくとふくらむことがある。大気圧を使って説明しよう。',['大気圧','小','中'],'高い場所では袋の外の大気圧が小さくなり、袋の中の圧力が相対的に大きくなるため、袋がふくらむ。','「外の大気圧」と「袋の中」を比べる。','因果関係が言えればOK。'));
 
   // さらに骨のある総合問題
-  add(txt('つり合い','誤答分析',5,'誤答を直せ','「物体が右向きに動いているから、右向きの力の方が大きい」と答えた人がいる。どこがまずい？',['動い','一定','つり合'],'動いていることだけでは力の大小は決められない。一定の速さでまっすぐ進むなら、左右の力がつり合う場合がある。','「動いている」と「運動のようすが変化している」を区別する。','入試で差がつく誤答分析。'));
+  add(txt('つり合い','誤答分析',5,'誤答を直せ','「物体が右向きに動いているから、右向きの力の方が大きい」と答えた人がいる。どこがまずい？',['動い','一定','つり合'],'動いていることだけでは力の大小は決められない。一定の速さでまっすぐ進むなら、左右の力がつり合う場合がある。','「動いている」と「運動のようすが変化している」を区別する。','難問で差がつく誤答分析。'));
   add(txt('質量と重さ','月面考察',5,'月のてんびん','地球で質量600gの球を月へ持っていった。上皿てんびんではなぜ600gの分銅とつり合うのか説明しよう。',['分銅','同じ','重力'],'球も分銅も月では重力が同じ割合で小さくなるため、質量600gどうしならつり合う。','球だけでなく分銅にも月の重力がはたらく。','質量と重さの違いを使う考察。'));
   return b;
 }
@@ -477,6 +558,48 @@ function recordComplete(topic,diff,{first=false,correct=true,reveal=false,comeba
 }
 function updateHomeMini(){const el=$('todayMini');if(el)el.textContent=`今日 ${STATS.completed}問｜一発 ${STATS.firstTry}問`}
 
+
+let FLOW={wantsLesson:false,target:25,endless:false};
+function setMode(m){mode=m;localStorage.setItem('forcePowerMode',mode)}
+function showFlowDifficulty(){show('flowDifficulty');setProgress('スタート',0,'1/3')}
+function showFlowExplain(){show('flowExplain');setProgress('スタート',12,'2/3')}
+function showFlowCount(){show('flowCount');setProgress('スタート',22,'3/3');renderFlowLengths()}
+function renderFlowLengths(){
+  $('flowLengthChoices').querySelectorAll('.lengthChoice').forEach(b=>{
+    const v=Number(b.dataset.flowLength),e=b.dataset.endless==='1';
+    b.classList.toggle('active',(FLOW.endless&&e)||(!FLOW.endless&&FLOW.target===v))
+  })
+}
+function showFlowPraise(){
+  const count=FLOW.endless?'好きなだけ':FLOW.target+'問';
+  const cap=modeCap();
+  const text=mode==='easy'
+    ?`いい選び方！今日は${count}。やさしいコースは★2まで。間違えたら似た問題がたくさん出るから、「できた」を積み重ねればOK。`
+    :mode==='normal'
+    ?`いいね！今日は${count}。標準コースは★3まで。基本を固めながら、少しずつ考える問題へ進もう。`
+    :`いいね、攻めるやん。今日は${count}。挑戦コースは★5まで。連続正解すると難問が出てくる。取りにいこう。`;
+  $('praiseEmoji').textContent=mode==='easy'?'🌱':mode==='normal'?'🙌':'🔥';
+  $('praiseTitle').textContent=mode==='easy'?'大丈夫。できる問題からいこう。':mode==='normal'?'いいね。ちょうどええ。':'よし。難問までいこう。';
+  $('praiseText').textContent=text;
+  show('flowPraise');setProgress('スタート',28,'準備OK')
+}
+function beginGuidedAdaptive(){
+  AD.focus='すべて';AD.target=FLOW.target;AD.endless=FLOW.endless;startAdaptive()
+}
+document.querySelectorAll('[data-flow-mode]').forEach(b=>b.onclick=()=>{setMode(b.dataset.flowMode);showFlowExplain()});
+$('guidedStart').onclick=showFlowDifficulty;
+$('homeAchievement').onclick=()=>showAchievement('今日の達成');
+$('withLesson').onclick=()=>{FLOW.wantsLesson=true;lessonIndex=0;loadLesson()};
+$('skipLesson').onclick=()=>{FLOW.wantsLesson=false;showFlowCount()};
+$('backToDifficulty').onclick=showFlowDifficulty;
+$('backToExplain').onclick=showFlowExplain;
+$('flowLengthChoices').querySelectorAll('.lengthChoice').forEach(b=>b.onclick=()=>{
+  FLOW.target=Number(b.dataset.flowLength);FLOW.endless=b.dataset.endless==='1';renderFlowLengths()
+});
+$('flowCountNext').onclick=showFlowPraise;
+$('praiseBack').onclick=showFlowCount;
+$('praiseStart').onclick=beginGuidedAdaptive;
+
 let AD={focus:'すべて',target:25,completed:0,score:0,current:null,wrong:0,usedHint:false,queue:[],recent:[],family:{},reason:'まずは今の実力からスタート。',endless:false};
 const FOCUS=['すべて',...TOPICS];
 const LENGTHS=[{label:'お手軽 12問',v:12},{label:'標準 25問',v:25},{label:'がっつり 40問',v:40},{label:'∞ エンドレス',v:9999,endless:true}];
@@ -494,10 +617,12 @@ function showAdaptiveSetup(){
   $('setupMastery').innerHTML=TOPICS.map(t=>{const p=masteryPct(t);return`<div class="m"><b>${t} ${p?p+'%':'未挑戦'}</b><div class="miniBar"><i style="width:${p}%"></i></div></div>`}).join('');
 }
 function familyState(f){if(!AD.family[f])AD.family[f]={right:0,wrong:0,level:mode==='easy'?1:mode==='normal'?2:3};return AD.family[f]}
+function modeCap(){return mode==='easy'?2:mode==='normal'?3:5}
 function targetDifficulty(){
   let base=mode==='easy'?1:mode==='normal'?2:3;
-  if(STATS.streak>=3)base++;if(STATS.streak>=7)base++;
-  return Math.max(1,Math.min(5,base));
+  if(STATS.streak>=3)base++;
+  if(STATS.streak>=7)base++;
+  return Math.max(1,Math.min(modeCap(),base));
 }
 function candidateTopics(){
   if(AD.focus!=='すべて')return[AD.focus];
@@ -508,11 +633,11 @@ function chooseQuestion(){
   const topics=candidateTopics(), td=targetDifficulty();
   let pool=[];
   for(const t of topics){
-    pool=BANK.filter(q=>q.topic===t && Math.abs(q.diff-td)<=1 && !AD.recent.includes(q.id));
+    pool=BANK.filter(q=>q.topic===t && q.diff<=modeCap() && Math.abs(q.diff-td)<=1 && !AD.recent.includes(q.id));
     if(pool.length)break;
   }
-  if(!pool.length)pool=BANK.filter(q=>(AD.focus==='すべて'||q.topic===AD.focus)&&!AD.recent.includes(q.id));
-  if(!pool.length){AD.recent=[];pool=BANK.filter(q=>AD.focus==='すべて'||q.topic===AD.focus)}
+  if(!pool.length)pool=BANK.filter(q=>(AD.focus==='すべて'||q.topic===AD.focus)&&q.diff<=modeCap()&&!AD.recent.includes(q.id));
+  if(!pool.length){AD.recent=[];pool=BANK.filter(q=>(AD.focus==='すべて'||q.topic===AD.focus)&&q.diff<=modeCap())}
   // 弱いfamilyを優先
   pool.sort((a,b)=>{
     const fa=familyState(a.family),fb=familyState(b.family);
@@ -525,7 +650,7 @@ function chooseQuestion(){
   return q;
 }
 function queueSimilar(q,count,why){
-  const pool=BANK.filter(x=>x.family===q.family&&x.id!==q.id&&!AD.recent.includes(x.id)).sort((a,b)=>Math.abs(a.diff-q.diff)-Math.abs(b.diff-q.diff));
+  const pool=BANK.filter(x=>x.family===q.family&&x.diff<=modeCap()&&x.id!==q.id&&!AD.recent.includes(x.id)).sort((a,b)=>Math.abs(a.diff-q.diff)-Math.abs(b.diff-q.diff));
   pool.slice(0,count).forEach((x,i)=>AD.queue.push({q:x,reason:`類題 ${i+1}/${Math.min(count,pool.length)}：${why}`}));
 }
 function startAdaptive(){
@@ -560,7 +685,8 @@ function adaptiveCorrect(msg){
   const bonus=q.diff>=4?3:q.diff>=3?2:1;AD.score+=bonus+(first&&!AD.usedHint?1:0);AD.completed++;
   recordComplete(q.topic,q.diff,{first,correct:true,comeback,points:bonus});
   $('practiceScore').textContent=`${AD.score} pt`;$('practiceDone').textContent=`${AD.completed} / ${AD.endless?'∞':AD.target}`;$('adaptiveStreak').textContent=`${STATS.streak}連続`;
-  $('practiceFeedback').className='feedback show good';$('practiceFeedback').innerHTML=`<b>${first?'一発！':'できた！'}</b><br>${msg}${comeback?'<br><b>この型、さっきよりできてる。</b>':''}`;
+  const praise=first?(STATS.streak>=5?'めっちゃ乗ってる！':STATS.streak>=3?'その調子！連続正解！':'ナイス、一発！'):(comeback?'よし！さっきよりできてる！':'できた！');
+  $('practiceFeedback').className='feedback show good';$('practiceFeedback').innerHTML=`<b>${praise}</b><br>${msg}${comeback?'<br><b>同じ型をもう一度できた。これは定着してきてる。</b>':''}`;
   $('practiceNext').style.display='inline-block';
   if(first&&STATS.streak>=3)AD.reason='連続正解！次は難度を1段上げます。';
 }
@@ -687,23 +813,50 @@ $('springReveal').onclick=()=>{const q=S[si];recordComplete(si>=6?'質量と重�
 
 // ----- Exam challenge -----
 const E=[
- {level:'LEVEL 1',title:'一定の速さで進む台車',type:'mc',p:'台車を右向き4Nで引くと、まっすぐ一定の速さで進んだ。左向きの摩擦力は？',c:['0N','2N','4N','8N'],a:2,e:'一定の速さでまっすぐ＝運動のようすは変化していない。左右の力がつり合い、摩擦力は4N。'},
- {level:'LEVEL 2',title:'プラスチック板と2つのばねばかり',type:'text',p:'1つのプラスチック板を左右からばねばかりA・Bで引き、板が静止した。Aが1Nを示すときBは何Nか。また、その2力がつり合っている理由を説明しよう。',keys:['1','反対','一直線','等し'],model:'Bも1N。2つの力は向きが反対で、一直線上にあり、大きさが等しいから。',e:'静止している板にはたらく左右の2力がつり合うため、Bも1N。'},
- {level:'LEVEL 3',title:'ばねのデータから予測',type:'num',p:'0.2Nで1.5cm伸びるばね。12.0cm伸ばすための力は？',ans:1.6,unit:'N',e:'比例より、12÷1.5＝8倍。0.2×8＝1.6N。'},
- {level:'LEVEL 4',title:'月へ持っていった球',type:'mc',p:'地球で質量600g、重さ6Nの球を月へ。月の重力は地球の1/6。正しい組み合わせは？',c:['質量100g・重さ1N','質量600g・重さ1N','質量600g・重さ6N','質量100g・重さ6N'],a:1,e:'質量は600gのまま、重さだけ1Nになる。'},
- {level:'LEVEL 5',title:'直方体の圧力',type:'num',p:'質量1.2kgの直方体を10cm×20cmの面を下にして置く。100g→1Nとする。床が受ける圧力は？',data:'10cm×20cm＝200cm²＝0.02m²',ans:600,unit:'Pa',e:'重力12N、面積0.02m²。12÷0.02＝600Pa。'},
- {level:'LEVEL 6',title:'雪に沈まない靴を設計',type:'text',p:'同じ体重の人が雪に沈みにくくなる靴を設計したい。「力・面積・圧力」を使って説明しよう。',keys:['面積','圧力','小'],model:'体重による力は同じなので、靴底を広くして雪と接する面積を大きくする。すると圧力が小さくなり、沈みにくくなる。',e:'面積を大きくして圧力を小さくするのがポイント。'},
- {level:'BOSS',title:'「動いているから力が勝っている」を論破',type:'text',p:'「右向きに動いている物体には、必ず右向きの力の方が大きい」という説明が正しくないことを、具体例を1つ挙げて説明しよう。',keys:['一定','速','つり合'],model:'例えば、まっすぐ一定の速さで進む台車は動いているが、左右の力がつり合っている場合があるため、右向きの力が必ず大きいとはいえない。',e:'一定の速さでまっすぐ進む例が反例になる。'}
-];
+ {level:'WARM UP',title:'フックの法則',type:'mc',
+  p:'ばねを引く力を2倍、3倍…にすると、ばねののびも2倍、3倍…になり、グラフは原点を通る直線になった。この関係を表す法則は？',
+  c:['フックの法則','オームの法則','質量保存の法則','パスカルの原理'],a:0,
+  e:'ばねののびは、ばねを引く力の大きさに比例する。この関係がフックの法則。',
+  source:'岐阜県（改）｜FdData高校入試過去問題「力」p.7',sourceUrl:'https://fdtext.com/dan/fdn_1b3_tikara.pdf#page=7'},
+ {level:'LEVEL 2',title:'グラフからばねののび',type:'num',
+  p:'あるばねは、重さ5.0Nのおもりで7.5cm伸びた。フックの法則にしたがうとき、重さ3.0Nのおもりでは何cm伸びる？',
+  ans:4.5,unit:'cm',e:'7.5×3.0÷5.0＝4.5cm。',
+  source:'青森県｜FdData高校入試過去問題「力」p.9',sourceUrl:'https://fdtext.com/dan/fdn_1b3_tikara.pdf#page=9'},
+ {level:'LEVEL 3',title:'のびから質量を逆算',type:'num',
+  p:'あるばねは0.5Nの力で4.0cm伸びる。ばねののびが2.8cmのとき、つるしたおもりの質量は何g？ 100gの物体にはたらく重力を1Nとする。',
+  ans:35,unit:'g',e:'2.8cmは4.0cmの0.7倍 → 力0.35N → 質量35g。',
+  source:'青森県｜FdData高校入試過去問題「力」p.10',sourceUrl:'https://fdtext.com/dan/fdn_1b3_tikara.pdf#page=10'},
+ {level:'LEVEL 4',title:'月面での質量と重さ',type:'mc',
+  p:'地球で質量300gの物体を月面へ持っていく。月の重力は地球の約1/6。上皿てんびんとばねばかりの値として正しいのは？',
+  c:['質量50g・重さ0.5N','質量300g・重さ0.5N','質量300g・重さ3N','質量50g・重さ3N'],a:1,
+  e:'質量は300gのまま。地球で約3Nなので、月での重さは約0.5N。',
+  source:'岡山県｜FdData高校入試過去問題「力」p.18',sourceUrl:'https://fdtext.com/dan/fdn_1b3_tikara.pdf#page=18'},
+ {level:'LEVEL 5',title:'一定の速さで上昇',type:'mc',
+  p:'おもりを糸で真上に引き、一定の速さで上昇させている。このとき、おもりにはたらく重力と、糸がおもりを引く力の大きさの関係は？',
+  c:['重力の方が大きい','同じ大きさ','糸が引く力の方が大きい','一定の速さでは判断できない'],a:1,
+  e:'一定の速さでまっすぐ運動しているので、運動のようすは変化していない。2力はつり合い、同じ大きさ。',
+  source:'静岡県｜FdData高校入試過去問題「力」p.29',sourceUrl:'https://fdtext.com/dan/fdn_1b3_tikara.pdf#page=29'},
+ {level:'LEVEL 6',title:'板から離れる瞬間',type:'num',
+  p:'同じばねで、50gのおもりを増やすごとに、ばねののびが5cmずつ増える。質量150gの立方体を水平な板の上に置き、ばねで真上にゆっくり引く。立方体が板から離れた瞬間、ばねののびは何cm？',
+  ans:15,unit:'cm',e:'板から離れる瞬間は、ばねの力だけで150gの物体の重力を支える。50g→5cmなので150g→15cm。',
+  source:'佐賀県｜FdData高校入試過去問題「力」p.14-15',sourceUrl:'https://fdtext.com/dan/fdn_1b3_tikara.pdf#page=14'},
+ {level:'BOSS',title:'ばね＋磁力の複合問題',type:'num',
+  p:'質量20gの磁石Aをばねにつるす。ばねは0.2Nで1.0cm伸びる。下から磁石BでAを引くと、距離2.0cmではばねののび5.0cm、距離4.0cmでは2.0cmになった。距離2.0cmのときの磁力は、4.0cmのときの何倍？',
+  ans:4,unit:'倍',e:'2.0cm：ばねの力1.0N－重力0.2N＝磁力0.8N。4.0cm：0.4N－0.2N＝0.2N。0.8÷0.2＝4倍。',
+  source:'長崎県｜FdData高校入試過去問題「力」p.13-14',sourceUrl:'https://fdtext.com/dan/fdn_1b3_tikara.pdf#page=13'}
+]
 let ei=0,escore=0,esolved=false,ewrong=0;
 function startExam(){ei=0;escore=0;loadExam()}
-function loadExam(){if(ei>=E.length){finishResult('入試級 完走',escore,E.length*3,true);return}const q=E[ei];esolved=false;ewrong=0;show('exam');setProgress('入試級チャレンジ',ei/E.length*100,`${ei+1}/${E.length}`);$('examLevel').textContent=q.level;$('examCount').textContent=`${ei+1}/${E.length}`;$('examScore').textContent=`${escore}pt`;$('examTitle').textContent=q.title;$('examPrompt').textContent=q.p;$('examData').innerHTML=q.data?`<div class="dataBox">${q.data}</div>`:'';$('examFeedback').className='feedback';$('examFeedback').innerHTML='';$('examNext').style.display='none';renderExamAnswer(q)}
+function loadExam(){if(ei>=E.length){finishResult('実在入試チャレンジ 完走',escore,E.length*3,true);return}const q=E[ei];esolved=false;ewrong=0;show('exam');setProgress('実在入試チャレンジ',ei/E.length*100,`${ei+1}/${E.length}`);$('examLevel').textContent=q.level;$('examCount').textContent=`${ei+1}/${E.length}`;$('examScore').textContent=`${escore}pt`;$('examTitle').textContent=q.title;$('examPrompt').textContent=q.p;$('examData').innerHTML=q.data?`<div class="dataBox">${q.data}</div>`:'';
+$('examSource').innerHTML=`<b>出典：</b>${q.source}<br><span>※原題を画面向けに表現整理</span>　<a href="${q.sourceUrl}" target="_blank" rel="noopener">FdDataで確認 ↗</a>`;
+$('examFeedback').className='feedback';$('examFeedback').innerHTML='';$('examNext').style.display='none';renderExamAnswer(q)}
 function renderExamAnswer(q){const a=$('examAnswer');if(q.type==='mc'){a.innerHTML=`<div class="choices">${q.c.map((x,i)=>`<button class="choice" data-i="${i}">${String.fromCharCode(65+i)}. ${x}</button>`).join('')}</div>`;a.querySelectorAll('.choice').forEach(b=>b.onclick=()=>judgeExamMC(q,Number(b.dataset.i),b))}else if(q.type==='num'){a.innerHTML=`<div class="answerRow"><input id="examNum" class="numInput" inputmode="decimal"><b>${q.unit}</b><button class="btn primary" id="examJudgeNum">判定</button></div>`;$('examJudgeNum').onclick=()=>judgeExamNum(q)}else{a.innerHTML=`<textarea id="examText" class="textAnswer" placeholder="短くてもOK。1回提出したら次へ進めます。"></textarea><div class="selfGrade"><button class="btn primary" id="examJudgeText">提出して自己採点</button></div>`;$('examJudgeText').onclick=()=>judgeExamText(q)}}
-function examPass(q,msg,pts=3){if(esolved)return;recordComplete(q.title.includes('圧力')?'圧力':q.title.includes('ばね')?'ばね':q.title.includes('月')?'質量と重さ':'つり合い',q.level==='BOSS'?5:4,{first:ewrong===0,correct:true,points:pts});STATS.modules.exam++;saveStats();esolved=true;escore+=pts;$('examScore').textContent=`${escore}pt`;$('examFeedback').className='feedback show good';$('examFeedback').innerHTML=`<b>突破！</b><br>${msg}`;$('examNext').style.display='inline-block'}
+function examTopic(q){if(/ばね|フック|磁力|板から/.test(q.title))return'ばね';if(/月/.test(q.title))return'質量と重さ';if(/一定/.test(q.title))return'つり合い';return'力の表し方'}
+function examPass(q,msg,pts=3){if(esolved)return;recordComplete(examTopic(q),q.level==='BOSS'?5:4,{first:ewrong===0,correct:true,points:pts});STATS.modules.exam++;saveStats();esolved=true;escore+=pts;$('examScore').textContent=`${escore}pt`;$('examFeedback').className='feedback show good';$('examFeedback').innerHTML=`<b>突破！</b><br>${msg}`;$('examNext').style.display='inline-block'}
 function judgeExamMC(q,i,b){if(esolved)return;if(i===q.a){b.classList.add('good');examPass(q,q.e,ewrong?2:3)}else{ewrong++;recordWrong('つり合い');b.classList.add('bad');$('examFeedback').className='feedback show bad';if(ewrong>=2){document.querySelectorAll('#examAnswer .choice')[q.a].classList.add('good');$('examFeedback').innerHTML=`<b>解説を確認して次へ。</b><br>${q.e}`;esolved=true;$('examNext').style.display='inline-block'}else $('examFeedback').innerHTML='<b>もう1回だけ。</b> 条件を1つ見直そう。'}}
-function judgeExamNum(q){if(esolved)return;const v=Number($('examNum').value);if(Math.abs(v-q.ans)<1e-9)examPass(q,q.e,ewrong?2:3);else{ewrong++;recordWrong(q.title.includes('圧力')?'圧力':'つり合い');$('examFeedback').className='feedback show bad';if(ewrong>=2){$('examFeedback').innerHTML=`<b>解説を確認して次へ。</b><br>${q.e}`;esolved=true;$('examNext').style.display='inline-block'}else $('examFeedback').innerHTML='<b>おしい。</b> 単位と式を確認。'}}
+function judgeExamNum(q){if(esolved)return;const v=Number($('examNum').value);if(Math.abs(v-q.ans)<1e-9)examPass(q,q.e,ewrong?2:3);else{ewrong++;recordWrong(examTopic(q));$('examFeedback').className='feedback show bad';if(ewrong>=2){$('examFeedback').innerHTML=`<b>解説を確認して次へ。</b><br>${q.e}`;esolved=true;$('examNext').style.display='inline-block'}else $('examFeedback').innerHTML='<b>おしい。</b> 単位と式を確認。'}}
 function judgeExamText(q){if(esolved)return;const t=$('examText').value.trim();if(!t){$('examFeedback').className='feedback show bad';$('examFeedback').innerHTML='<b>一言でOK。</b> 書けなければ「解説を見る」で進めます。';return}const hit=q.keys.filter(k=>t.includes(k)).length;const level=hit===q.keys.length?'◎':hit>=Math.ceil(q.keys.length/2)?'○':'△';escore+=level==='◎'?3:level==='○'?2:1;recordComplete(q.title.includes('雪')?'圧力':'つり合い',q.level==='BOSS'?5:4,{first:level!=='△',correct:level!=='△',reveal:level==='△',points:level==='◎'?3:level==='○'?2:0});STATS.modules.exam++;saveStats();esolved=true;$('examScore').textContent=`${escore}pt`;$('examFeedback').className='feedback show good';$('examFeedback').innerHTML=`<b>${level} 自己採点。提出完了、次へ進んでOK。</b><br>拾えた観点：${hit}/${q.keys.length}<br><b>模範：</b>${q.model}`;$('examNext').style.display='inline-block'}
-$('examReveal').onclick=()=>{const q=E[ei];recordComplete(q.title.includes('圧力')?'圧力':q.title.includes('ばね')?'ばね':q.title.includes('月')?'質量と重さ':'つり合い',4,{correct:false,reveal:true});esolved=true;$('examFeedback').className='feedback show good';$('examFeedback').innerHTML=`<b>解説</b><br>${q.type==='text'?`模範：${q.model}`:q.e}`;$('examNext').style.display='inline-block'};$('examNext').onclick=()=>{ei++;loadExam()};
+$('examReveal').onclick=()=>{const q=E[ei];recordComplete(examTopic(q),4,{correct:false,reveal:true});esolved=true;$('examFeedback').className='feedback show good';$('examFeedback').innerHTML=`<b>解説</b><br>${q.type==='text'?`模範：${q.model}`:q.e}`;$('examNext').style.display='inline-block'};$('examNext').onclick=()=>{ei++;loadExam()};
 
 
 function mainTitle(){
@@ -726,7 +879,7 @@ function badges(){
   if(STATS.completed>=100)b.push(['💯','100問突破']);
   if(STATS.maxStreak>=5)b.push(['⚡',`${STATS.maxStreak}連続正解`]);
   if(STATS.hard>=5)b.push(['🔥','難問ハンター']);
-  if(STATS.hard>=12)b.push(['👑','入試ブレイカー']);
+  if(STATS.hard>=12)b.push(['👑','難問ブレイカー']);
   if(STATS.comeback>=3)b.push(['🌱','粘りの研究者']);
   if(STATS.modules.arrow>=7)b.push(['↗️','矢印マスター']);
   if(STATS.modules.pressure>=6)b.push(['🧮','圧力ハンター']);
@@ -753,7 +906,7 @@ function showAchievement(reason='今日の達成'){
 }
 function finishResult(title,score,max,exam=false){showAchievement(title)}
 
-$('lessonStart').onclick=startLessons;$('practiceStart').onclick=showAdaptiveSetup;$('arrowStart').onclick=startArrow;$('pressureStart').onclick=startPressure;$('springStart').onclick=startSpring;$('examStart').onclick=startExam;$('headerAchievement').onclick=()=>showAchievement('今日の達成');
+$('arrowStart').onclick=startArrow;$('pressureStart').onclick=startPressure;$('springStart').onclick=startSpring;$('examStart').onclick=startExam;$('headerAchievement').onclick=()=>showAchievement('今日の達成');
 
 $('bankCountHome').textContent=BANK.length+'問';
 const savedName=localStorage.getItem('forceLabStudentName')||'';$('studentName').value=savedName;

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<title>力の復習ラボ 強化版｜中1理科</title>
+<title>力の復習ラボ ULTRA｜個別最適・達成画面</title>
 <style>
 :root{
   --bg:#f4f9ff;--panel:#fff;--ink:#18324c;--sub:#667b90;--line:#dbe6f1;
@@ -53,20 +53,59 @@ h2{font-size:clamp(24px,3.5vw,36px);margin:8px 0 12px}.lead{font-size:17px;line-
  .labLayout{grid-template-columns:1fr}.sideCard{position:static}.progress{max-width:none}.head{align-items:flex-start}.brand{font-size:14px}
  .panel{padding:17px}.hero{padding:21px}.canvasWrap{min-height:330px}
 }
+
+/* ===== v2 個別最適化・達成画面 ===== */
+.nameRow{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px}
+.nameInput{min-width:260px;max-width:100%;border:2px solid #d5e0ec;border-radius:13px;padding:11px 13px;outline:none;background:#fff}
+.nameInput:focus{border-color:#7b9ff8}
+.bankBanner{margin-top:13px;padding:13px 15px;border-radius:16px;background:linear-gradient(135deg,#f1f7ff,#f3fff8);border:1px solid #d6e7e1;display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}
+.bankBanner b{font-size:17px}.bankBanner span{color:#5e7488;font-size:13px;line-height:1.5}
+.headerAchieve{margin-left:8px;border:0;background:#fff2d8;color:#8b5a10;font-weight:1000;border-radius:11px;padding:8px 11px;white-space:nowrap}
+.adaptiveGrid{display:grid;grid-template-columns:1.15fr .85fr;gap:14px}
+.setupBox{border:1px solid var(--line);border-radius:18px;padding:18px;background:#fbfdff}
+.setupBox h3{margin:0 0 10px}.setupOptions{display:flex;gap:8px;flex-wrap:wrap}.setupOpt{border:2px solid #d9e3ee;background:#fff;border-radius:13px;padding:10px 12px;font-weight:900;color:#4f6578}.setupOpt.active{border-color:var(--blue);background:#edf4ff;color:#205dbb}
+.adaptiveStatus{display:flex;gap:7px;flex-wrap:wrap;margin:10px 0}.adaptiveStatus span{border-radius:999px;padding:7px 10px;background:#f0f5fa;color:#51697f;font-size:12px;font-weight:900}
+.adaptiveReason{margin:11px 0;padding:11px 13px;border-radius:14px;background:#fff8e8;border:1px solid #ecd8a9;color:#72571b;line-height:1.55;font-weight:850}
+.exampleBox{margin-top:12px;padding:13px 15px;border-radius:15px;background:#effaf5;border:1px solid #c9e8d9;color:#35644f;line-height:1.65}
+.masteryMini{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:10px}.masteryMini .m{border:1px solid #dbe5ef;border-radius:12px;padding:9px 10px;background:#fff}.masteryMini b{font-size:12px}.miniBar{height:6px;background:#e7edf3;border-radius:999px;overflow:hidden;margin-top:6px}.miniBar>i{display:block;height:100%;background:linear-gradient(90deg,#4e7df8,#1cad7f)}
+.adaptiveFooter{display:flex;justify-content:space-between;gap:9px;align-items:center;flex-wrap:wrap;margin-top:17px}
+.adaptiveFooter .left,.adaptiveFooter .right{display:flex;gap:8px;flex-wrap:wrap}
+.achievementWrap{max-width:1060px;margin:auto}
+.submissionCard{background:linear-gradient(135deg,#ffffff,#f7fbff 55%,#f4fff9);border:2px solid #dce8f4;border-radius:28px;padding:24px;box-shadow:0 18px 55px rgba(47,87,130,.13);position:relative;overflow:hidden}
+.submissionCard:after{content:"FORCE LAB";position:absolute;right:-20px;top:-26px;font-size:92px;font-weight:1000;opacity:.035;transform:rotate(7deg)}
+.subTop{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.subName{font-size:15px;color:#657a8d}.subName b{color:var(--ink);font-size:20px}
+.titleAward{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#fff1c8,#ffe7b2);border:1px solid #ebcd82;border-radius:999px;padding:8px 13px;font-weight:1000;color:#825810}
+.bigTitle{font-size:clamp(34px,5vw,58px);font-weight:1000;margin:9px 0 4px;line-height:1}.bigSub{color:#5f7487;line-height:1.55}
+.achievementStats{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:17px 0}.achievementStat{background:#fff;border:1px solid #dce6ef;border-radius:14px;padding:10px 8px;text-align:center}.achievementStat strong{display:block;font-size:25px;line-height:1.1}.achievementStat span{font-size:11px;color:#6a7d8e;font-weight:800}
+.topicMastery{display:grid;grid-template-columns:repeat(2,1fr);gap:7px 14px}.topicLine{display:grid;grid-template-columns:110px 1fr 45px;gap:8px;align-items:center;font-size:12px}.topicLine b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.topicBar{height:8px;background:#e9eef3;border-radius:999px;overflow:hidden}.topicBar i{display:block;height:100%;background:linear-gradient(90deg,#5281f6,#20ab7c)}.topicPct{text-align:right;font-weight:1000;color:#4f6578}
+.badges{display:flex;gap:7px;flex-wrap:wrap;margin-top:14px}.badge{padding:7px 10px;border-radius:999px;background:#f3efff;border:1px solid #ddd4f7;color:#55498b;font-size:12px;font-weight:1000}.badge.gold{background:#fff3d6;border-color:#ead09a;color:#835a14}
+.nextAdvice{margin-top:14px;padding:12px 14px;border-radius:14px;background:#f1f7ff;border:1px solid #d5e4f5;color:#46627c;line-height:1.6}
+.submissionFoot{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:13px;padding-top:10px;border-top:1px dashed #cfdae5;color:#748798;font-size:11px}
+.resultActions{display:flex;justify-content:center;gap:9px;flex-wrap:wrap;margin-top:16px}
+.captureMode{position:fixed!important;inset:0!important;z-index:9999!important;background:#eef5fb!important;padding:14px!important;overflow:auto!important}
+.captureMode .submissionCard{max-width:1180px;margin:auto;min-height:calc(100vh - 28px);display:flex;flex-direction:column;justify-content:center}
+.captureMode .resultActions,.captureMode header{display:none!important}
+.captureExit{display:none;position:fixed;right:18px;bottom:18px;z-index:10000;border:0;border-radius:999px;background:#253e59;color:#fff;padding:11px 15px;font-weight:1000}
+.captureMode~.captureExit,.captureExit.show{display:block}
+@media(max-width:900px){
+ .adaptiveGrid{grid-template-columns:1fr}.achievementStats{grid-template-columns:repeat(3,1fr)}.topicMastery{grid-template-columns:1fr}.topicLine{grid-template-columns:100px 1fr 42px}
+ .headerAchieve{font-size:12px;padding:7px 9px}.masteryMini{grid-template-columns:1fr}
+}
+
 </style>
 </head>
 <body>
 <header><div class="head">
-  <div class="brand"><span class="brandIcon">🧲</span><span>力の復習ラボ <b>強化版</b></span></div>
+  <div class="brand"><span class="brandIcon">🧲</span><span>力の復習ラボ <b>ULTRA</b></span></div>
   <div class="progress">
     <div class="progressTop"><span id="progressLabel">スタート</span><span id="progressCount"></span></div>
     <div class="bar"><div id="progressBar"></div></div>
-  </div>
+  </div><button class="headerAchieve" id="headerAchievement">📸 今日の達成</button>
 </div></header>
 <main>
 <section id="home" class="screen active">
   <div class="panel hero">
-    <span class="tag">中1「力」総復習｜通信なし・AIなし</span>
+    <span class="tag">中1「力」総復習｜個別最適・通信なし・AIなし</span>
     <h1>わかる・描ける・計算できる。<br>最後は入試級まで。</h1>
     <p>説明を読み直すだけでも、演習だけでもOK。矢印、つり合い、ばね、質量と重さ、圧力まで一つにまとめました。</p>
     <div class="modeGrid">
@@ -76,13 +115,18 @@ h2{font-size:clamp(24px,3.5vw,36px);margin:8px 0 12px}.lead{font-size:17px;line-
     </div>
     <div class="menuGrid">
       <button class="menuCard" id="lessonStart"><div class="ico">📘</div><div><b>説明から復習</b><span>力のはたらき→矢印→つり合い→ばね→質量と重さ→圧力→大気圧。</span></div></button>
-      <button class="menuCard" id="practiceStart"><div class="ico">🧠</div><div><b>強化演習</b><span>基礎から思考問題まで。アップロード教材の内容もまとめて演習。</span></div></button>
+      <button class="menuCard" id="practiceStart"><div class="ico">🧠</div><div><b>個別最適ラボ</b><span>12・25・40問／エンドレス。ミスした型は類題、連続正解なら自動で難しくなる。</span></div></button>
       <button class="menuCard" id="arrowStart"><div class="ico">↗️</div><div><b>矢印実技</b><span>作用点・向き・大きさをドラッグで。生活場面＋つり合いまで10問。</span></div></button>
       <button class="menuCard" id="pressureStart"><div class="ico">🧮</div><div><b>圧力計算</b><span>力÷面積。cm²→m²も含めて、詰まったら式まで出す。</span></div></button>
       <button class="menuCard" id="springStart"><div class="ico">🪀</div><div><b>ばね・質量と重さ</b><span>フックの法則、グラフ、地球と月、ばねばかりと上皿てんびん。</span></div></button>
       <button class="menuCard" id="examStart"><div class="ico">🏆</div><div><b>入試級チャレンジ</b><span>一定速度・つり合い・実験データ・圧力・記述。記述は1回で次へ。</span></div></button>
     </div>
-    <div class="notice"><b>授業用安定設計：</b> 外部通信なし。記述問題も「完全一致するまで進めない」はありません。解説を見て進んでもOKです。</div>
+    <div class="bankBanner">
+  <div><b>🧠 問題バンク <span id="bankCountHome">180+</span>問 ＋ 実技</b><br><span>教材の基本型をもとに、生活場面・類題・計算・考察・入試級へ展開。間違えた型は自動で類題が増えます。</span></div>
+  <span id="todayMini">今日 0問</span>
+</div>
+<div class="nameRow"><b>ロイロ提出用：</b><input class="nameInput" id="studentName" placeholder="名前・出席番号など（任意）"><span style="color:#718599;font-size:12px">この端末内だけに保存</span></div>
+<div class="notice"><b>個別最適化：</b> 苦手な型は似た問題を連続で。連続正解すると自動で難度UP。得意な人には入試級・考察問題が混ざります。外部通信・AIは使いません。</div>
   </div>
 </section>
 
@@ -96,19 +140,35 @@ h2{font-size:clamp(24px,3.5vw,36px);margin:8px 0 12px}.lead{font-size:17px;line-
   <div class="nav"><button class="btn ghost" onclick="goHome()">最初に戻る</button><button class="btn primary" id="lessonNext">次へ →</button></div>
 </div></section>
 
+
+<section id="adaptiveSetup" class="screen"><div class="panel">
+  <div class="topline"><span class="tag">個別最適ラボ</span><span class="tag" id="setupModeTag"></span></div>
+  <h2>今日のトレーニングを決める</h2>
+  <p class="lead">途中で間違えた単元は、似た問題が自動で追加されます。得意なら勝手に難しくなります。</p>
+  <div class="adaptiveGrid">
+    <div class="setupBox"><h3>① どこをやる？</h3><div class="setupOptions" id="focusOptions"></div></div>
+    <div class="setupBox"><h3>② どれくらいやる？</h3><div class="setupOptions" id="lengthOptions"></div></div>
+  </div>
+  <div class="masteryMini" id="setupMastery"></div>
+  <div class="nav"><button class="btn ghost" onclick="goHome()">最初に戻る</button><button class="btn primary" id="adaptiveGo">個別最適スタート →</button></div>
+</div></section>
+
 <section id="practice" class="screen"><div class="panel">
   <div class="practiceHead">
-    <div><div class="topline"><span class="tag" id="practiceCat"></span><span class="tag" id="practiceDiff"></span></div><h2 id="practiceTitle"></h2></div>
-    <div class="statStrip"><span class="stat" id="practiceScore">0点</span><span class="stat" id="practiceDone">0 / 0</span></div>
+    <div><div class="topline"><span class="tag" id="practiceCat"></span><span class="tag" id="practiceDiff"></span><span class="tag" id="adaptiveWhy"></span></div><h2 id="practiceTitle"></h2></div>
+    <div class="statStrip"><span class="stat" id="practiceScore">0 pt</span><span class="stat" id="practiceDone">0 / 0</span><span class="stat" id="adaptiveStreak">0連続</span></div>
   </div>
-  <div class="chips" id="practiceChips"></div>
-  <div class="stageRow" id="practiceStages"></div>
+  <div class="adaptiveReason" id="adaptiveReason"></div>
   <div class="prompt" id="practicePrompt"></div>
   <div id="practiceData"></div>
+  <div class="exampleBox" id="workedExample" style="display:none"></div>
   <div id="practiceAnswer"></div>
   <div class="support" id="practiceSupport"></div>
   <div class="feedback" id="practiceFeedback"></div>
-  <div class="nav"><button class="btn ghost" onclick="goHome()">最初に戻る</button><div><button class="btn soft" id="practiceHint">💡 ヒント</button> <button class="btn warn" id="practiceReveal">答え・解説</button> <button class="btn primary" id="practiceNext" style="display:none">次へ →</button></div></div>
+  <div class="adaptiveFooter">
+    <div class="left"><button class="btn ghost" onclick="goHome()">ホーム</button><button class="btn red" id="adaptiveFinish">ここで終了→達成画面</button></div>
+    <div class="right"><button class="btn soft" id="practiceHint">💡 ヒント</button><button class="btn warn" id="practiceReveal">答え・解説</button><button class="btn primary" id="practiceNext" style="display:none">次へ →</button></div>
+  </div>
 </div></section>
 
 <section id="arrowLab" class="screen"><div class="panel">
@@ -176,13 +236,34 @@ h2{font-size:clamp(24px,3.5vw,36px);margin:8px 0 12px}.lead{font-size:17px;line-
   <div class="nav"><button class="btn ghost" onclick="goHome()">最初に戻る</button><div><button class="btn warn" id="examReveal">解説を見る</button> <button class="btn primary" id="examNext" style="display:none">次へ →</button></div></div>
 </div></section>
 
-<section id="result" class="screen"><div class="panel resultBox">
-  <div class="rank" id="resultRank">A</div>
-  <h2 id="resultTitle">完走！</h2>
-  <p class="lead" id="resultText"></p>
-  <div class="statStrip" style="justify-content:center;margin:18px 0" id="resultStats"></div>
-  <button class="btn primary" onclick="goHome()">最初に戻る</button>
+<section id="result" class="screen"><div class="achievementWrap">
+  <div class="submissionCard" id="submissionCard">
+    <div class="subTop">
+      <div class="subName">力の復習ラボ｜今日の学習記録<br><b id="resultStudent">学習者</b></div>
+      <div class="titleAward" id="resultTitleAward">🏅 力の見習い</div>
+    </div>
+    <div class="bigTitle" id="resultTitle">今日も前進！</div>
+    <div class="bigSub" id="resultText">取り組んだ記録がここにまとまります。</div>
+    <div class="achievementStats">
+      <div class="achievementStat"><strong id="statSolved">0</strong><span>取り組んだ問題</span></div>
+      <div class="achievementStat"><strong id="statFirst">0</strong><span>一発正解</span></div>
+      <div class="achievementStat"><strong id="statRate">0%</strong><span>一発正答率</span></div>
+      <div class="achievementStat"><strong id="statStreak">0</strong><span>最高連続</span></div>
+      <div class="achievementStat"><strong id="statHard">0</strong><span>難問突破</span></div>
+      <div class="achievementStat"><strong id="statTime">0分</strong><span>学習時間</span></div>
+    </div>
+    <div class="topicMastery" id="topicMastery"></div>
+    <div class="badges" id="resultBadges"></div>
+    <div class="nextAdvice" id="resultAdvice"></div>
+    <div class="submissionFoot"><span id="resultDate"></span><span>この画面をスクリーンショット → ロイロ提出</span></div>
+  </div>
+  <div class="resultActions">
+    <button class="btn primary" id="captureBtn">📸 ロイロ提出モード</button>
+    <button class="btn soft" onclick="goHome()">まだ解く</button>
+    <button class="btn red" id="resetToday">今日の記録をリセット</button>
+  </div>
 </div></section>
+<button class="captureExit" id="captureExit">提出モードを閉じる</button>
 </main>
 
 <script>
@@ -235,79 +316,278 @@ function startLessons(){lessonIndex=0;loadLesson()}
 function loadLesson(){const l=LESSONS[lessonIndex];show('lesson');setProgress('説明から復習',lessonIndex/LESSONS.length*100,`${lessonIndex+1}/${LESSONS.length}`);$('lessonUnit').textContent=l.unit;$('lessonNum').textContent=modeName();$('lessonTitle').textContent=l.title;$('lessonLead').textContent=l.lead;$('lessonCards').innerHTML=l.cards.map(c=>`<div class="lessonCard"><b>${c[0]}</b><p>${c[1]}</p></div>`).join('');$('lessonStory').innerHTML=`<b>つながる小話：</b> ${l.story}`;$('lessonRemember').innerHTML=`<b>今日の一文：</b> ${l.remember}`;$('lessonNext').textContent=lessonIndex===LESSONS.length-1?'強化演習へ →':'次へ →'}
 $('lessonNext').onclick=()=>{lessonIndex++;if(lessonIndex>=LESSONS.length){startPractice()}else loadLesson()};
 
-const Q=[
- {cat:'力のはたらき',d:1,type:'mc',title:'スポンジを押す',p:'スポンジを押すとへこんだ。力のはたらきは？',c:['運動のようすを変える','物体を支える','物体を変形させる','質量を変える'],a:2,h:'形が変わっています。',e:'スポンジがへこんだ＝物体を変形させるはたらき。'},
- {cat:'力のはたらき',d:1,type:'mc',title:'赤信号で止まる',p:'走っていた車が赤信号で停止した。力のはたらきは？',c:['運動のようすを変える','支える','変形だけ','磁化する'],a:0,h:'速さが変わりました。',e:'動いていた→止まった。運動のようすが変化した。'},
- {cat:'力のはたらき',d:1,type:'mc',title:'バケツを持ち上げる',p:'水の入ったバケツを手で持ち上げて静止させた。特に表れている力のはたらきは？',c:['物体を支える','物体を消す','質量を変える','磁力を生む'],a:0,h:'落ちないように手が…。',e:'手がバケツを支えている。'},
- {cat:'力の種類',d:1,type:'mc',title:'自転車のブレーキ',p:'自転車のブレーキをかけると減速した。タイヤやブレーキのゴムの間にはたらく力は？',c:['磁力','摩擦力','重力','張力'],a:1,h:'接している面どうしで動きをさまたげます。',e:'摩擦力。'},
- {cat:'力の種類',d:1,type:'mc',title:'磁石どうし',p:'磁石の異なる極を近づけると引き合う。この力は？',c:['静電気力','磁力','弾性力','抗力'],a:1,h:'磁石が原因。',e:'磁力。異なる極は引き合い、同じ極は反発する。'},
- {cat:'力の種類',d:1,type:'mc',title:'下じきと髪',p:'こすった下じきが髪の毛を引き寄せた。この力は？',c:['静電気力','磁力','摩擦力だけ','張力'],a:0,h:'こすって生じた電気が関係。',e:'静電気力。'},
- {cat:'力の種類',d:1,type:'mc',title:'ばねが戻る',p:'伸ばしたばねが元の形に戻ろうとする力は？',c:['弾性力','重力','磁力','摩擦力'],a:0,h:'変形した物体が元に戻ろうとする力。',e:'弾性力。'},
- {cat:'力の種類',d:1,type:'mc',title:'糸でつるす',p:'糸でおもりをつり下げた。糸からおもりにはたらく上向きの力は？',c:['抗力','張力','摩擦力','静電気力'],a:1,h:'糸が引く力。',e:'張力。'},
- {cat:'力の種類',d:1,type:'mc',title:'机が本を支える',p:'机が本を上向きに支える力は？',c:['抗力（垂直抗力）','張力','磁力','重力'],a:0,h:'接している面が、面に垂直に支える力。',e:'抗力（垂直抗力）。'},
- {cat:'力の表し方',d:1,type:'mc',title:'矢印の3要素',p:'力の矢印が表す3つの要素の組み合わせは？',c:['作用点・向き・大きさ','質量・体積・密度','速さ・時間・距離','温度・圧力・湿度'],a:0,h:'どこから、どっちへ、どれくらい。',e:'作用点・向き・大きさ。'},
- {cat:'力の表し方',d:1,type:'num',title:'500gの重力',p:'100gの物体にはたらく重力を1Nとする。500gの物体にはたらく重力は何N？',ans:5,unit:'N',h:'500gは100gの5個分。',e:'500÷100＝5なので約5N。'},
- {cat:'力の表し方',d:2,type:'num',title:'矢印3.5cm',p:'1Nの力を1cmの矢印で表す。矢印の長さが3.5cmなら、力は何N？',ans:3.5,unit:'N',h:'1cm＝1N。',e:'3.5cmなら3.5N。'},
- {cat:'つり合い',d:1,type:'mc',title:'2力の条件',p:'2力がつり合う条件として正しい組み合わせは？',c:['同じ向き・同じ大きさ・平行','反対向き・同じ大きさ・同一直線上','反対向き・異なる大きさ・平行','同じ向き・異なる大きさ・一直線'],a:1,h:'合言葉は「同じ・反対・一直線」。',e:'大きさが等しい、向きが反対、同一直線上。'},
- {cat:'つり合い',d:1,type:'num',title:'300gのおもり',p:'300gのおもりを糸でつって静止させた。100g→1Nとすると、張力は何N？',ans:3,unit:'N',h:'静止しているので重力と張力がつり合う。',e:'重力3Nとつり合うので張力も3N。'},
- {cat:'つり合い',d:2,type:'mc',title:'同じ6Nでも？',p:'右向き6Nと左向き6Nがはたらくが、2本の矢印が同一直線上にない。2力はつり合う？',c:['つり合う','つり合わない','静止なら必ずつり合う','作用点が違えば必ずつり合う'],a:1,h:'3条件のうち1つ欠けています。',e:'同一直線上にないので、2力のつり合いとはいえない。'},
- {cat:'つり合い',d:2,type:'mc',title:'一定の速さ',p:'台車を右向き4Nで引くと、まっすぐ一定の速さで進んだ。左向きの摩擦力は？',c:['0N','2N','4N','8N'],a:2,h:'一定の速さ＝運動のようすが変化していない。',e:'左右の力がつり合い、摩擦力は4N。'},
- {cat:'ばね',d:1,type:'mc',title:'比例関係',p:'ばねを引く力が2倍になったとき、ばねののびも2倍になった。この関係は？',c:['比例','反比例','一定','無関係'],a:0,h:'一方が2倍ならもう一方も2倍。',e:'比例関係。'},
- {cat:'ばね',d:1,type:'mc',title:'法則の名前',p:'ばねを引く力とばねののびが比例する関係を何という？',c:['フックの法則','オームの法則','パスカルの原理','慣性の法則'],a:0,h:'ばねの法則。',e:'フックの法則。'},
- {cat:'ばね',d:2,type:'num',title:'6個のおもり',p:'おもり1個で0.2N、ばねが1.5cm伸びる。おもり6個では力は何N？',ans:1.2,unit:'N',h:'0.2×6。',e:'1.2N。'},
- {cat:'ばね',d:2,type:'num',title:'6個で何cm',p:'1個で1.5cm伸びるばね。6個では何cm伸びる？',ans:9,unit:'cm',h:'比例なので1.5×6。',e:'9.0cm。'},
- {cat:'ばね',d:2,type:'num',title:'12cm伸ばす',p:'0.2Nで1.5cm伸びるばねを12.0cm伸ばすには、何N必要？',ans:1.6,unit:'N',h:'12÷1.5＝8個分。0.2×8。',e:'1.6N。'},
- {cat:'質量と重さ',d:1,type:'mc',title:'重さの単位',p:'重さの単位は？',c:['g','kg','N','m²'],a:2,h:'重さ＝重力の大きさ。',e:'N（ニュートン）。'},
- {cat:'質量と重さ',d:1,type:'mc',title:'質量の単位',p:'質量の単位として適切なのは？',c:['g, kg','N','Pa','m/s'],a:0,h:'物質そのものの量。',e:'gやkg。'},
- {cat:'質量と重さ',d:2,type:'num',title:'月での重さ',p:'地球で質量600gの球の重さを6Nとする。月の重力は地球の約1/6。月での重さは何N？',ans:1,unit:'N',h:'6÷6。',e:'約1N。'},
- {cat:'質量と重さ',d:2,type:'num',title:'月での質量',p:'地球で質量600gの球を月へ持っていった。月での質量は何g？',ans:600,unit:'g',h:'質量は場所が変わっても変わらない。',e:'600g。'},
- {cat:'質量と重さ',d:2,type:'mc',title:'測る道具',p:'重さと質量を測る道具の組み合わせは？',c:['重さ＝ばねばかり、質量＝上皿てんびん','重さ＝上皿てんびん、質量＝ばねばかり','どちらも温度計','どちらもメスシリンダー'],a:0,h:'ばねばかりは力を測る。',e:'ばねばかり→重さ、上皿てんびん→質量。'},
- {cat:'圧力',d:1,type:'num',title:'20N÷4m²',p:'20Nの力が4m²の面にはたらく。圧力は？',ans:5,unit:'Pa',h:'圧力＝力÷面積。',e:'20÷4＝5Pa。'},
- {cat:'圧力',d:2,type:'num',title:'200cm²',p:'50Nの箱。底面積200cm²。圧力は？',ans:2500,unit:'Pa',h:'200cm²＝0.02m²。50÷0.02。',e:'200cm²＝0.02m²、50÷0.02＝2500Pa。'},
- {cat:'圧力',d:2,type:'mc',title:'雪に沈みにくい',p:'同じ体重で雪に沈みにくくするには？',c:['接地面積を小さくする','接地面積を大きくする','体重を増やす','重力を大きくする'],a:1,h:'圧力を小さくしたい。',e:'面積を大きくすると圧力が小さくなる。'},
- {cat:'大気圧',d:1,type:'mc',title:'高い山',p:'高い山ほど大気圧はどうなる？',c:['大きくなる','小さくなる','必ず0になる','変わらない'],a:1,h:'自分より上にある空気が少ない。',e:'小さくなる。'},
- {cat:'大気圧',d:2,type:'mc',title:'ポテチの袋',p:'高い山で未開封のポテトチップスの袋がふくらむ主な理由は？',c:['袋の外の大気圧が小さくなる','袋の中の空気がなくなる','重力がなくなる','袋の質量が増える'],a:0,h:'袋の外から押す力が…。',e:'外側の大気圧が小さくなり、袋の中の圧力が相対的に大きくなる。'},
- {cat:'総合',d:3,type:'text',title:'つり合いを説明',p:'糸で静止しているおもりにはたらく張力と重力が「つり合っている」といえる理由を、「向き」「一直線上」「大きさ」の3語を使って説明しよう。',keys:['向き','一直線','大きさ'],model:'2つの力は、向きが反対で、一直線上にあり、大きさが等しいから。',h:'3条件を文章に。'},
- {cat:'総合',d:3,type:'text',title:'動いていてもつり合う',p:'「右向きに動いている物体では、右向きの力の方が必ず大きい」という説明が正しくないことを、具体例を1つ挙げて説明しよう。',keys:['一定','速','つり合'],model:'例えば、まっすぐ一定の速さで進む台車は動いているが、左右の力がつり合っている場合があるため、右向きの力が必ず大きいとはいえない。',h:'一定の速さでまっすぐ動く例を考える。'}
-];
 
-let practiceList=[],practiceIndex=0,practiceScore=0,practiceWrong=0,practiceSolved=false,currentCat='すべて';
-const cats=['すべて',...new Set(Q.map(q=>q.cat))];
-function modeMaxD(){return mode==='easy'?2:mode==='normal'?3:3}
-function startPractice(cat='すべて'){currentCat=cat;practiceScore=0;practiceIndex=0;buildPractice();loadPractice()}
-function buildPractice(){let base=Q.filter(q=>q.d<=modeMaxD()&&(currentCat==='すべて'||q.cat===currentCat));if(mode==='challenge'&&currentCat==='すべて')base=Q.filter(q=>q.d>=2);practiceList=base}
-function loadPractice(){
- if(!practiceList.length){goHome();return}
- if(practiceIndex>=practiceList.length){finishResult('強化演習 完走',practiceScore,practiceList.length*3);return}
- const q=practiceList[practiceIndex];practiceWrong=0;practiceSolved=false;show('practice');setProgress('強化演習',practiceIndex/practiceList.length*100,`${practiceIndex+1}/${practiceList.length}`);
- $('practiceCat').textContent=q.cat;$('practiceDiff').textContent='★'.repeat(q.d);$('practiceTitle').textContent=q.title;$('practicePrompt').textContent=q.p;$('practiceData').innerHTML=q.data?`<div class="dataBox">${q.data}</div>`:'';
- $('practiceScore').textContent=`${practiceScore}点`;$('practiceDone').textContent=`${practiceIndex+1} / ${practiceList.length}`;$('practiceFeedback').className='feedback';$('practiceFeedback').innerHTML='';$('practiceNext').style.display='none';
- $('practiceSupport').innerHTML=mode==='easy'?`<b>やさしいナビ：</b> ${q.h||'問題文の大事な言葉を1つずつ見よう。'}`:mode==='normal'?'<b>ポイント：</b> 困ったらヒントを押してOK。':'<b>挑戦：</b> まずはノーヒントで。';
- renderPracticeAnswer(q);renderPracticeChips();renderPracticeStages()
+/* ===== 大問題バンク + 個別最適化 ===== */
+const TOPICS=['力のはたらき','力の種類','力の表し方','つり合い','ばね','質量と重さ','圧力','大気圧'];
+const mc=(topic,family,diff,title,p,c,a,h,e,example='')=>({topic,family,diff,type:'mc',title,p,c,a,h,e,example});
+const num=(topic,family,diff,title,p,ans,unit,h,e,example='')=>({topic,family,diff,type:'num',title,p,ans,unit,h,e,example});
+const txt=(topic,family,diff,title,p,keys,model,h,e)=>({topic,family,diff,type:'text',title,p,keys,model,h,e,example:''});
+
+function buildMegaBank(){
+  const b=[]; let id=1; const add=q=>{q.id='F'+String(id++).padStart(3,'0');b.push(q)};
+  const effects=[
+    ['スポンジを指で押すとへこんだ','物体を変形させる'],
+    ['粘土を手で押して平らにした','物体を変形させる'],
+    ['ゴムひもを引っぱると伸びた','物体を変形させる'],
+    ['ばねを手で押すと縮んだ','物体を変形させる'],
+    ['止まっていたサッカーボールをけると動いた','運動のようすを変える'],
+    ['走っていた自転車がブレーキで止まった','運動のようすを変える'],
+    ['飛んできたボールをラケットで打ち返した','運動のようすを変える'],
+    ['カーブする自転車の向きが変わった','運動のようすを変える'],
+    ['水の入ったバケツを手で持ち上げている','物体を支える'],
+    ['棚が本を下から支えている','物体を支える'],
+    ['手のひらにボールをのせて静止させた','物体を支える'],
+    ['ハンガーが制服をつり下げている','物体を支える']
+  ];
+  const effectChoices=['物体を変形させる','運動のようすを変える','物体を支える','物体の質量を変える'];
+  effects.forEach((x,i)=>add(mc('力のはたらき','はたらき判定',1,'どのはたらき？',x[0]+'。力のはたらきとして最も適切なのは？',effectChoices,effectChoices.indexOf(x[1]),'「形」「動き」「支える」のどれが変わったかを見る。',x[1]+'。','例：スポンジがへこむ→形が変わる→「変形させる」。')));
+
+  const forceCases=[
+    ['りんごを空中で離すと地面へ落ちる','重力'],['手から離れた消しゴムが床へ落ちる','重力'],['月が地球に引かれている','重力'],
+    ['自転車のブレーキでタイヤの回転が弱まる','摩擦力'],['机の上の本を横に押しても動かない','摩擦力'],['すべり台をすべるとき服とすべり台の間にはたらく','摩擦力'],
+    ['異なる極の磁石どうしが引き合う','磁力'],['同じ極の磁石どうしが反発する','磁力'],['磁石が鉄くぎを引き寄せる','磁力'],
+    ['こすった下じきが髪の毛を引き寄せる','静電気力'],['こすったストローが紙片を引き寄せる','静電気力'],['帯電した2つの物体が反発する','静電気力'],
+    ['伸ばした輪ゴムが元に戻ろうとする','弾性力'],['縮めたばねが元の長さに戻ろうとする','弾性力'],['曲げたプラスチック定規が戻ろうとする','弾性力'],
+    ['糸でつるしたおもりを糸が上向きに引く','張力'],['ロープで荷物を引くときロープが荷物を引く','張力'],['ブランコの鎖が座面を引く','張力'],
+    ['机が本を上向きに支える','抗力（垂直抗力）'],['床が立っている人を上向きに支える','抗力（垂直抗力）'],['壁が押しつけられた手を押し返す','抗力（垂直抗力）']
+  ];
+  const forceNames=['重力','摩擦力','磁力','静電気力','弾性力','張力','抗力（垂直抗力）'];
+  forceCases.forEach((x,i)=>{
+    const others=forceNames.filter(y=>y!==x[1]);
+    const cs=[x[1],others[(i+1)%others.length],others[(i+3)%others.length],others[(i+5)%others.length]];
+    add(mc('力の種類','力の名前',1+(i%5===0?1:0),'この力の名前は？',x[0]+'。主にはたらいている力は？',cs,0,'「何が原因で」「何が何を押す・引く？」を見る。',x[1]+'。','例：糸が物体を引く→張力。机が本を支える→抗力。'));
+  });
+
+  [100,200,300,400,500,600,800,900,1200,1500].forEach((m,i)=>add(num('力の表し方','質量→重力',1+(i>=6?1:0),`${m}gの重力`, `100gの物体にはたらく重力を約1Nとする。質量${m}gの物体にはたらく重力は？`,m/100,'N','100g→1N。何個分か考える。',`${m}÷100＝${m/100}N。`,'例：300gなら100gの3個分→約3N。')));
+  [1.5,2,2.5,3,3.5,4,4.5,5].forEach((len,i)=>add(num('力の表し方','矢印の長さ',1+(i>=4?1:0),`矢印${len}cm`,`1Nの力を1cmの矢印で表す。矢印の長さが${len}cmなら何N？`,len,'N','1cm＝1N。','矢印の長さと力の大きさは対応する。','例：3.5cmなら3.5N。')));
+  [
+    ['力の矢印が表す3要素は？',['作用点・向き・大きさ','質量・体積・密度','速さ・距離・時間','温度・湿度・圧力'],0],
+    ['重力を表す矢印の向きは？',['鉛直下向き','鉛直上向き','物体が動く向き','必ず右向き'],0],
+    ['重力の作用点として中学で基本的に考える位置は？',['物体の中心','必ず物体の下端','必ず物体の上端','どこでもよい'],0],
+    ['力の矢印が長いほど表しているものは？',['力が大きい','質量が小さい','作用点が遠い','速さが大きい'],0],
+    ['力の大きさの単位は？',['N','g','Pa','m²'],0]
+  ].forEach((x,i)=>add(mc('力の表し方','矢印の基本',1,'矢印の基本',x[0],x[1],x[2],'「どこから・どっちへ・どれくらい」。',x[1][x[2]]+'。','作用点・向き・大きさの3点セット。')));
+
+  ['100','200','300','400','500','600','700','800'].forEach((ms,i)=>{
+    const m=Number(ms), n=m/100;
+    add(num('つり合い','つり下げ',2,`${m}gのおもり`, `質量${m}gのおもりを糸でつり下げて静止させた。張力は何N？`,n,'N','静止→重力と張力がつり合う。',`重力${n}Nとつり合うので張力も${n}N。`,'例：300g→重力3N、静止なら張力も3N。'));
+    add(num('つり合い','机上静止',2,`${m}gの本`, `質量${m}gの本が机の上で静止している。机が本を支える力は何N？`,n,'N','重力と机が支える力がつり合う。',`重力${n}Nとつり合い、机が支える力も${n}N。`,'例：200gの本なら重力2N、机も上向き2Nで支える。'));
+  });
+  [1,2,3,4,5,6,7,8].forEach((f,i)=>{
+    add(num('つり合い','押す力と摩擦',2+(i>=5?1:0),`右向き${f}Nで押す`, `箱を右向き${f}Nで押したが動かなかった。左向きの摩擦力は何N？`,f,'N','静止→水平方向の力もつり合う。',`摩擦力は左向き${f}N。`,'例：右3Nで押して静止→摩擦力は左3N。'));
+    add(num('つり合い','一定速度',3,`一定の速さ・${f}N`,`台車を右向き${f}Nで引くと、まっすぐ一定の速さで進んだ。左向きの摩擦力は何N？`,f,'N','一定の速さでまっすぐ→運動のようすは変わらない。',`左右がつり合い、摩擦力は${f}N。`,'例：動いていても一定速度なら、力がつり合う場合がある。'));
+  });
+  [
+    ['2力がつり合う3条件は？',['大きさが等しい・向きが反対・同一直線上','大きさが等しい・向きが同じ・平行','大きさが異なる・向きが反対・一直線上','大きさが等しければ他は何でもよい'],0],
+    ['右6N・左6Nだが、2本は平行で同一直線上にない。つり合う？',['つり合わない','つり合う','静止なら必ずつり合う','作用点が違えば必ずつり合う'],0],
+    ['右4N・左3Nが同一直線上にはたらく。つり合う？',['つり合わない','つり合う','向きが反対なら必ずつり合う','動いていればつり合う'],0],
+    ['同じ大きさで同じ向きの2力。つり合う？',['つり合わない','つり合う','一直線上ならつり合う','静止ならつり合う'],0]
+  ].forEach((x,i)=>add(mc('つり合い','つり合い条件',2+i%2,'3条件を見抜く',x[0],x[1],x[2],'合言葉は「同じ・反対・一直線」。',x[1][x[2]]+'。','大きさが等しい・向きが反対・同一直線上。')));
+  add(txt('つり合い','つり合い記述',4,'理由を説明','糸で静止しているおもりにはたらく張力と重力が「つり合っている」といえる理由を、「向き」「一直線上」「大きさ」を使って説明しよう。',['向き','一直線','大きさ'],'2つの力は向きが反対で、一直線上にあり、大きさが等しいから。','3条件を文章にする。','完全一致でなくてOK。3条件が言えれば十分。'));
+  add(txt('つり合い','一定速度記述',5,'動いていても？','「右向きに動いている物体では、右向きの力の方が必ず大きい」という説明が正しくないことを、具体例を挙げて説明しよう。',['一定','速','つり合'],'例えば、まっすぐ一定の速さで進む台車は動いているが、左右の力がつり合っている場合がある。','一定の速さでまっすぐ動く例を使う。','「動いている」と「力がつり合わない」は同じ意味ではない。'));
+
+  const springRates=[
+    {f:.2,x:1.5},{f:.3,x:2},{f:.4,x:2.5},{f:.5,x:3},{f:.25,x:2}
+  ];
+  springRates.forEach((r,ri)=>{
+    [2,3,4,5].forEach((k,ki)=>{
+      const force=+(r.f*k).toFixed(2), ext=+(r.x*k).toFixed(2);
+      add(num('ばね','力→のび',2+(ki>=2?1:0),`ばね ${force}N`,`このばねは${r.f}Nで${r.x}cm伸びる。${force}Nでは何cm伸びる？`,ext,'cm',`力は${k}倍。のびも${k}倍。`,`${r.x}×${k}＝${ext}cm。`,`例：力が2倍なら、ばねののびも2倍。`));
+      add(num('ばね','のび→力',3,`のび ${ext}cm`,`このばねは${r.f}Nで${r.x}cm伸びる。${ext}cm伸ばすには何N必要？`,force,'N',`${ext}cmは${r.x}cmの${k}倍。`,`${r.f}×${k}＝${force}N。`,`例：のびが4倍なら必要な力も4倍。`));
+    });
+  });
+  [
+    ['ばねを引く力とばねののびの関係は？',['比例','反比例','無関係','必ず一定'],0],
+    ['この比例関係を表す法則は？',['フックの法則','オームの法則','質量保存の法則','パスカルの原理'],0],
+    ['力とのびのグラフが原点を通る直線。この関係は？',['比例','反比例','二次関数','一定'],0]
+  ].forEach(x=>add(mc('ばね','ばね概念',1,x[0],x[1],x[2],'一方が2倍ならもう一方も2倍。',x[1][x[2]]+'。','力とのびは比例。')));
+  [1,2,3,4,5,6].forEach(k=>add(num('ばね','おもり個数',2+(k>=5?1:0),`${k}個のおもり`,`おもり1個で0.2N、ばねが1.5cm伸びる。${k}個ではばねののびは何cm？`,1.5*k,'cm',`1.5×${k}。`,`のびは${1.5*k}cm。`,'同じおもりを増やすと、力ものびも比例して増える。')));
+
+  [100,200,300,400,500,600,900,1200].forEach((m,i)=>{
+    add(num('質量と重さ','地球の重さ',1+(i>=6?1:0),`${m}gの重さ`,`100g→約1Nとする。地球上で質量${m}gの物体の重さは？`,m/100,'N','質量100gあたり約1N。',`約${m/100}N。`,'重さ＝重力の大きさ、単位はN。'));
+    add(num('質量と重さ','月の重さ',3,`月での重さ`,`地球で質量${m}gの物体。月の重力は地球の約1/6。地球での重さを${m/100}Nとすると、月での重さは？`,+(m/600).toFixed(3),'N','地球での重さ÷6。',`約${+(m/600).toFixed(3)}N。`,'月では重さは約1/6になる。'));
+    add(num('質量と重さ','月の質量',2,`月での質量`,`地球で質量${m}gの物体を月へ持っていった。月での質量は？`,m,'g','質量は場所が変わっても変わらない。',`${m}gのまま。`,'質量はg・kgで表し、場所が変わっても変わらない。'));
+  });
+  [
+    ['重さの単位は？',['N','g','kg','Pa'],0],
+    ['質量の単位として正しいのは？',['g・kg','N','Pa','m/s'],0],
+    ['重さを測る道具は？',['ばねばかり','上皿てんびん','メスシリンダー','温度計'],0],
+    ['質量を測る道具は？',['上皿てんびん','ばねばかり','気圧計','温度計'],0],
+    ['月で上皿てんびんを使うと質量を測れる理由として近いのは？',['物体も分銅も同じ割合で重力が小さくなるから','月では重力が0だから','月では質量が1/6になるから','分銅だけ重くなるから'],0]
+  ].forEach((x,i)=>add(mc('質量と重さ','重さと質量概念',1+(i===4?3:0),'重さと質量',x[0],x[1],x[2],'「N」と「g・kg」を分ける。',x[1][x[2]]+'。','重さは場所で変わる。質量は変わらない。')));
+
+  const simplePressure=[
+    [20,4],[30,3],[40,2],[50,5],[60,3],[80,4],[100,.5],[120,.4],[150,.5],[200,.25],[600,.04],[400,.02]
+  ];
+  simplePressure.forEach((v,i)=>{
+    const ans=v[0]/v[1];
+    add(num('圧力','圧力基本',1+(i>=6?1:0),`圧力 ${v[0]}N÷${v[1]}m²`,`${v[0]}Nの力が${v[1]}m²の面にはたらく。圧力は？`,ans,'Pa',`圧力＝${v[0]}÷${v[1]}。`,`${ans}Pa。`,'例：20N÷4m²＝5Pa。'));
+  });
+  const cmCases=[
+    [20,100],[40,200],[50,200],[60,300],[80,400],[100,500],[120,600],[150,500],[200,1000],[300,1500],[500,2500],[600,3000]
+  ];
+  cmCases.forEach((v,i)=>{
+    const area=v[1]/10000, ans=v[0]/area;
+    add(num('圧力','cm²→m²',2+(i>=6?1:0),`${v[1]}cm²を変換`,`力${v[0]}N、面積${v[1]}cm²。圧力は？`,ans,'Pa',`${v[1]}cm²＝${area}m² → ${v[0]}÷${area}`,`${ans}Pa。`,`例：200cm²＝0.02m²。面積は10000で割ってm²へ。`));
+  });
+  [
+    ['同じ力なら、接する面積を小さくすると圧力は？',['大きくなる','小さくなる','変わらない','0になる'],0],
+    ['同じ力なら、接する面積を2倍にすると圧力は？',['1/2になる','2倍になる','同じ','4倍になる'],0],
+    ['スノーシューで雪に沈みにくくなるのは？',['接地面積を大きくして圧力を小さくするから','重力をなくすから','質量を小さくするから','空気抵抗をなくすから'],0],
+    ['同じ直方体を広い面を下にして置くと？',['圧力は小さくなる','圧力は大きくなる','重さが変わる','質量が変わる'],0]
+  ].forEach((x,i)=>add(mc('圧力','圧力比較',2+i%2,'圧力を比べる',x[0],x[1],x[2],'力が同じなら圧力は面積が大きいほど小さい。',x[1][x[2]]+'。','圧力＝力÷面積。')));
+  [[600,200],[800,400],[1200,300],[1500,500]].forEach((v,i)=>{
+    const mass=v[0], areaCm=v[1], force=mass/100, area=areaCm/10000, ans=force/area;
+    add(num('圧力','質量→重力→圧力',4,'多段階圧力',`質量${mass}gの物体を、面積${areaCm}cm²の面を下にして置く。100g→1Nとして圧力は？`,ans,'Pa',`①重力${force}N ②${areaCm}cm²＝${area}m² ③力÷面積。`,`${force}÷${area}＝${ans}Pa。`,'入試級：質量→重力、cm²→m²、最後に圧力。'));
+  });
+  add(txt('圧力','圧力記述',4,'雪に沈まない靴','同じ体重の人が雪に沈みにくくなる靴を設計したい。「力・面積・圧力」を使って説明しよう。',['面積','圧力','小'],'体重による力はほぼ同じなので、靴底を広くして雪と接する面積を大きくする。すると圧力が小さくなり、沈みにくくなる。','面積を大きくしたとき圧力がどうなるか。','考え方が合っていれば短くてもOK。'));
+
+  const atm=[
+    ['高い山ほど大気圧は？',['小さくなる','大きくなる','必ず0になる','変わらない'],0],
+    ['大気圧はどの向きからはたらく？',['あらゆる向き','上からだけ','下からだけ','横からだけ'],0],
+    ['海面付近の大気圧に近いのは？',['約1013hPa','約10hPa','約1Pa','約100000hPa'],0],
+    ['高い山でポテトチップスの袋がふくらむ主な理由は？',['外の大気圧が小さくなる','袋の質量が増える','重力がなくなる','袋の中の空気が消える'],0],
+    ['高い場所ほど大気圧が小さい理由として近いのは？',['自分より上にある空気が少ないから','空気の質量が0になるから','重力が完全になくなるから','温度だけで決まるから'],0],
+    ['1気圧はおよそ何Pa？',['101300Pa','1013Pa','1013000Pa','101.3Pa'],0],
+    ['空気にも重さがあることと関係する圧力は？',['大気圧','水圧だけ','磁力','弾性力'],0],
+    ['山頂と海面付近では、一般にどちらの大気圧が大きい？',['海面付近','山頂','同じ','決められない'],0]
+  ];
+  atm.forEach((x,i)=>add(mc('大気圧','大気圧概念',1+(i>=3?1:0),'大気圧',x[0],x[1],x[2],'空気の重さと、上にある空気の量を考える。',x[1][x[2]]+'。','高い場所ほど大気圧は小さくなる。')));
+  add(txt('大気圧','大気圧記述',4,'ポテチがふくらむ','未開封のポテトチップスの袋を高い山へ持っていくとふくらむことがある。大気圧を使って説明しよう。',['大気圧','小','中'],'高い場所では袋の外の大気圧が小さくなり、袋の中の圧力が相対的に大きくなるため、袋がふくらむ。','「外の大気圧」と「袋の中」を比べる。','因果関係が言えればOK。'));
+
+  // さらに骨のある総合問題
+  add(txt('つり合い','誤答分析',5,'誤答を直せ','「物体が右向きに動いているから、右向きの力の方が大きい」と答えた人がいる。どこがまずい？',['動い','一定','つり合'],'動いていることだけでは力の大小は決められない。一定の速さでまっすぐ進むなら、左右の力がつり合う場合がある。','「動いている」と「運動のようすが変化している」を区別する。','入試で差がつく誤答分析。'));
+  add(txt('質量と重さ','月面考察',5,'月のてんびん','地球で質量600gの球を月へ持っていった。上皿てんびんではなぜ600gの分銅とつり合うのか説明しよう。',['分銅','同じ','重力'],'球も分銅も月では重力が同じ割合で小さくなるため、質量600gどうしならつり合う。','球だけでなく分銅にも月の重力がはたらく。','質量と重さの違いを使う考察。'));
+  return b;
 }
-function renderPracticeChips(){const box=$('practiceChips');box.innerHTML=cats.map(c=>`<button class="chip ${c===currentCat?'active':''}" data-cat="${c}">${c}</button>`).join('');box.querySelectorAll('.chip').forEach(b=>b.onclick=()=>{currentCat=b.dataset.cat;practiceIndex=0;practiceScore=0;buildPractice();loadPractice()})}
-function renderPracticeStages(){const box=$('practiceStages');const n=practiceList.length;const max=Math.min(n,32);box.innerHTML='';for(let i=0;i<max;i++){const b=document.createElement('button');b.className='stageBtn '+(i===practiceIndex?'current':'');b.textContent=i+1;b.onclick=()=>{practiceIndex=i;loadPractice()};box.appendChild(b)}}
-function renderPracticeAnswer(q){
- const a=$('practiceAnswer');
- if(q.type==='mc'){
-   a.innerHTML=`<div class="choices">${q.c.map((x,i)=>`<button class="choice" data-i="${i}">${String.fromCharCode(65+i)}. ${x}</button>`).join('')}</div>`;
-   a.querySelectorAll('.choice').forEach(b=>b.onclick=()=>judgePracticeMC(q,Number(b.dataset.i),b));
- }else if(q.type==='num'){
-   a.innerHTML=`<div class="answerRow"><input id="practiceNum" class="numInput" inputmode="decimal" placeholder="数値"><b>${q.unit||''}</b><button class="btn primary" id="practiceJudgeNum">判定</button></div>`;
-   $('practiceJudgeNum').onclick=()=>judgePracticeNum(q);$('practiceNum').addEventListener('keydown',e=>{if(e.key==='Enter')judgePracticeNum(q)})
- }else{
-   a.innerHTML=`<textarea id="practiceText" class="textAnswer" placeholder="短くてもOK。自分の言葉で書こう。"></textarea><div class="selfGrade"><button class="btn primary" id="practiceJudgeText">自己採点する</button></div>`;
-   $('practiceJudgeText').onclick=()=>judgePracticeText(q)
- }
+const BANK=buildMegaBank();
+
+const todayString=()=>new Date().toLocaleDateString('ja-JP',{year:'numeric',month:'numeric',day:'numeric'});
+function blankStats(){return{date:todayString(),startedAt:Date.now(),completed:0,firstTry:0,correct:0,wrong:0,hints:0,reveals:0,maxStreak:0,streak:0,hard:0,comeback:0,points:0,perTopic:{},modules:{arrow:0,pressure:0,spring:0,exam:0}}}
+let STATS=(()=>{try{const s=JSON.parse(localStorage.getItem('forceLabTodayV2')||'null');return s&&s.date===todayString()?s:blankStats()}catch(_){return blankStats()}})();
+function topicStat(t){if(!STATS.perTopic[t])STATS.perTopic[t]={completed:0,correct:0,firstTry:0,wrong:0,reveals:0,hard:0};return STATS.perTopic[t]}
+function saveStats(){localStorage.setItem('forceLabTodayV2',JSON.stringify(STATS));updateHomeMini()}
+function recordWrong(topic){STATS.wrong++;topicStat(topic).wrong++;STATS.streak=0;saveStats()}
+function recordHint(){STATS.hints++;saveStats()}
+function recordComplete(topic,diff,{first=false,correct=true,reveal=false,comeback=false,points=1}={}){
+  STATS.completed++;const ts=topicStat(topic);ts.completed++;
+  if(correct){STATS.correct++;ts.correct++;STATS.points+=points;if(first){STATS.firstTry++;ts.firstTry++;STATS.streak++;STATS.maxStreak=Math.max(STATS.maxStreak,STATS.streak)}else STATS.streak=0;if(diff>=4){STATS.hard++;ts.hard++}if(comeback)STATS.comeback++}
+  if(reveal){STATS.reveals++;ts.reveals++;STATS.streak=0}
+  saveStats()
 }
-function practicePass(q,msg,pts=3){if(practiceSolved)return;practiceSolved=true;practiceScore+=pts;$('practiceScore').textContent=`${practiceScore}点`;$('practiceFeedback').className='feedback show good';$('practiceFeedback').innerHTML=`<b>OK！</b><br>${msg}`;$('practiceNext').style.display='inline-block'}
-function judgePracticeMC(q,i,b){if(practiceSolved)return;if(i===q.a){b.classList.add('good');practicePass(q,q.e,practiceWrong?2:3)}else{practiceWrong++;b.classList.add('bad');$('practiceFeedback').className='feedback show bad';if(practiceWrong>=2){document.querySelectorAll('#practiceAnswer .choice')[q.a]?.classList.add('good');$('practiceFeedback').innerHTML=`<b>ここで解説。</b><br>${q.e}`;$('practiceNext').style.display='inline-block';practiceSolved=true}else{$('practiceFeedback').innerHTML=`<b>おしい。</b><br>${mode==='easy'?q.h:'もう1回だけ考えてみよう。'}`;if(mode==='easy'){const choices=[...document.querySelectorAll('#practiceAnswer .choice')].filter((x,j)=>j!==q.a&&j!==i);if(choices[0])choices[0].classList.add('removed')}}}}
-function judgePracticeNum(q){if(practiceSolved)return;const v=Number($('practiceNum').value);if(Math.abs(v-q.ans)<1e-9){practicePass(q,q.e,practiceWrong?2:3)}else{practiceWrong++;$('practiceFeedback').className='feedback show bad';if(practiceWrong>=2){$('practiceFeedback').innerHTML=`<b>答えを確認して次へ。</b><br>${q.e}`;$('practiceNext').style.display='inline-block';practiceSolved=true}else{$('practiceFeedback').innerHTML=`<b>おしい。</b><br>${mode==='easy'?q.h:'式・単位・計算のどこか1つを見直そう。'}`}}}
-function judgePracticeText(q){if(practiceSolved)return;const t=$('practiceText').value.trim();if(!t){$('practiceFeedback').className='feedback show bad';$('practiceFeedback').innerHTML='<b>一言でOK。</b><br>書けなければ「答え・解説」を押して進んでも大丈夫。';return}
- const hit=q.keys.filter(k=>t.includes(k)).length;const level=hit===q.keys.length?'◎':hit>=Math.ceil(q.keys.length/2)?'○':'△';practiceScore+=level==='◎'?3:level==='○'?2:1;practiceSolved=true;$('practiceScore').textContent=`${practiceScore}点`;$('practiceFeedback').className='feedback show good';$('practiceFeedback').innerHTML=`<b>${level} 自己採点</b><br>あなたの答えで拾えた大事な語：${hit}/${q.keys.length}<br><b>模範：</b>${q.model}<br><span style="color:#61798c">完全一致じゃなくてOK。考え方を比べて次へ進もう。</span>`;$('practiceNext').style.display='inline-block'}
-$('practiceHint').onclick=()=>{const q=practiceList[practiceIndex];$('practiceSupport').innerHTML=`<b>💡 ヒント：</b> ${q.h||q.e}`};
-$('practiceReveal').onclick=()=>{const q=practiceList[practiceIndex];practiceSolved=true;$('practiceFeedback').className='feedback show good';$('practiceFeedback').innerHTML=`<b>答え・解説</b><br>${q.type==='mc'?`答え：${String.fromCharCode(65+q.a)}. ${q.c[q.a]}<br>`:q.type==='num'?`答え：${q.ans}${q.unit||''}<br>`:`模範：${q.model}<br>`}${q.e||''}`;$('practiceNext').style.display='inline-block'};
-$('practiceNext').onclick=()=>{practiceIndex++;loadPractice()};
+function updateHomeMini(){const el=$('todayMini');if(el)el.textContent=`今日 ${STATS.completed}問｜一発 ${STATS.firstTry}問`}
+
+let AD={focus:'すべて',target:25,completed:0,score:0,current:null,wrong:0,usedHint:false,queue:[],recent:[],family:{},reason:'まずは今の実力からスタート。',endless:false};
+const FOCUS=['すべて',...TOPICS];
+const LENGTHS=[{label:'お手軽 12問',v:12},{label:'標準 25問',v:25},{label:'がっつり 40問',v:40},{label:'∞ エンドレス',v:9999,endless:true}];
+function masteryPct(t){
+  const s=topicStat(t);if(!s.completed)return 0;
+  const success=s.correct/s.completed, first=s.firstTry/s.completed;
+  return Math.round(Math.min(100,(success*.65+first*.35)*100));
+}
+function showAdaptiveSetup(){
+  show('adaptiveSetup');setProgress('個別最適ラボ',0,'準備');$('setupModeTag').textContent=modeName();
+  $('focusOptions').innerHTML=FOCUS.map(x=>`<button class="setupOpt ${x===AD.focus?'active':''}" data-f="${x}">${x}</button>`).join('');
+  $('lengthOptions').innerHTML=LENGTHS.map(x=>`<button class="setupOpt ${(AD.endless&&x.endless)||(!AD.endless&&AD.target===x.v)?'active':''}" data-v="${x.v}" data-e="${x.endless?'1':'0'}">${x.label}</button>`).join('');
+  $('focusOptions').querySelectorAll('button').forEach(b=>b.onclick=()=>{AD.focus=b.dataset.f;showAdaptiveSetup()});
+  $('lengthOptions').querySelectorAll('button').forEach(b=>b.onclick=()=>{AD.target=Number(b.dataset.v);AD.endless=b.dataset.e==='1';showAdaptiveSetup()});
+  $('setupMastery').innerHTML=TOPICS.map(t=>{const p=masteryPct(t);return`<div class="m"><b>${t} ${p?p+'%':'未挑戦'}</b><div class="miniBar"><i style="width:${p}%"></i></div></div>`}).join('');
+}
+function familyState(f){if(!AD.family[f])AD.family[f]={right:0,wrong:0,level:mode==='easy'?1:mode==='normal'?2:3};return AD.family[f]}
+function targetDifficulty(){
+  let base=mode==='easy'?1:mode==='normal'?2:3;
+  if(STATS.streak>=3)base++;if(STATS.streak>=7)base++;
+  return Math.max(1,Math.min(5,base));
+}
+function candidateTopics(){
+  if(AD.focus!=='すべて')return[AD.focus];
+  return [...TOPICS].sort((a,b)=>masteryPct(a)-masteryPct(b));
+}
+function chooseQuestion(){
+  if(AD.queue.length){const item=AD.queue.shift();AD.reason=item.reason;return item.q}
+  const topics=candidateTopics(), td=targetDifficulty();
+  let pool=[];
+  for(const t of topics){
+    pool=BANK.filter(q=>q.topic===t && Math.abs(q.diff-td)<=1 && !AD.recent.includes(q.id));
+    if(pool.length)break;
+  }
+  if(!pool.length)pool=BANK.filter(q=>(AD.focus==='すべて'||q.topic===AD.focus)&&!AD.recent.includes(q.id));
+  if(!pool.length){AD.recent=[];pool=BANK.filter(q=>AD.focus==='すべて'||q.topic===AD.focus)}
+  // 弱いfamilyを優先
+  pool.sort((a,b)=>{
+    const fa=familyState(a.family),fb=familyState(b.family);
+    const sa=fa.right-fa.wrong*1.6, sb=fb.right-fb.wrong*1.6;
+    return sa-sb || Math.abs(a.diff-td)-Math.abs(b.diff-td) || Math.random()-.5;
+  });
+  const shortlist=pool.slice(0,Math.min(8,pool.length));
+  const q=shortlist[Math.floor(Math.random()*shortlist.length)]||pool[0];
+  AD.reason=STATS.streak>=3?'連続正解中。少し骨のある問題へ。':'今の達成度が低いところを優先しています。';
+  return q;
+}
+function queueSimilar(q,count,why){
+  const pool=BANK.filter(x=>x.family===q.family&&x.id!==q.id&&!AD.recent.includes(x.id)).sort((a,b)=>Math.abs(a.diff-q.diff)-Math.abs(b.diff-q.diff));
+  pool.slice(0,count).forEach((x,i)=>AD.queue.push({q:x,reason:`類題 ${i+1}/${Math.min(count,pool.length)}：${why}`}));
+}
+function startAdaptive(){
+  AD.completed=0;AD.score=0;AD.wrong=0;AD.usedHint=false;AD.queue=[];AD.recent=[];AD.family={};AD.reason='まずは今の実力からスタート。';loadAdaptive()
+}
+function loadAdaptive(){
+  if(!AD.endless&&AD.completed>=AD.target){showAchievement('個別最適ラボ 完走');return}
+  AD.current=chooseQuestion();AD.wrong=0;AD.usedHint=false;AD.recent.push(AD.current.id);if(AD.recent.length>18)AD.recent.shift();
+  const q=AD.current;show('practice');const total=AD.endless?'∞':AD.target;setProgress('個別最適ラボ',AD.endless?Math.min(95,AD.completed%40/40*100):AD.completed/AD.target*100,`${AD.completed+1}/${total}`);
+  $('practiceCat').textContent=q.topic;$('practiceDiff').textContent='★'.repeat(q.diff);$('adaptiveWhy').textContent=AD.queue.length?'類題中':'自動選択';$('practiceTitle').textContent=q.title;$('practicePrompt').textContent=q.p;$('practiceData').innerHTML=q.data?`<div class="dataBox">${q.data}</div>`:'';
+  $('practiceScore').textContent=`${AD.score} pt`;$('practiceDone').textContent=`${AD.completed} / ${total}`;$('adaptiveStreak').textContent=`${STATS.streak}連続`;
+  $('adaptiveReason').textContent=AD.reason;$('practiceFeedback').className='feedback';$('practiceFeedback').innerHTML='';$('practiceNext').style.display='none';
+  const ex=$('workedExample');if(mode==='easy'||familyState(q.family).wrong>0){ex.style.display='block';ex.innerHTML=`<b>🌱 例題・考え方</b><br>${q.example||q.h||'問題文の条件を1つずつ拾おう。'}`}else ex.style.display='none';
+  $('practiceSupport').innerHTML=mode==='easy'?`<b>やさしいナビ：</b> ${q.h||'1つずつ確認しよう。'}`:mode==='challenge'?'<b>🔥 挑戦：</b> ノーヒント正解はボーナス。':'<b>ポイント：</b> 困ったらヒントを使ってOK。';
+  renderAdaptiveAnswer(q)
+}
+function renderAdaptiveAnswer(q){
+  const a=$('practiceAnswer');
+  if(q.type==='mc'){
+    a.innerHTML=`<div class="choices">${q.c.map((x,i)=>`<button class="choice" data-i="${i}">${String.fromCharCode(65+i)}. ${x}</button>`).join('')}</div>`;
+    a.querySelectorAll('.choice').forEach(b=>b.onclick=()=>judgeAdaptiveMC(Number(b.dataset.i),b))
+  }else if(q.type==='num'){
+    a.innerHTML=`<div class="answerRow"><input id="adaptiveNum" class="numInput" inputmode="decimal" placeholder="数値"><b>${q.unit||''}</b><button class="btn primary" id="adaptiveNumBtn">判定</button></div>`;
+    $('adaptiveNumBtn').onclick=judgeAdaptiveNum;$('adaptiveNum').addEventListener('keydown',e=>{if(e.key==='Enter')judgeAdaptiveNum()})
+  }else{
+    a.innerHTML=`<textarea id="adaptiveText" class="textAnswer" placeholder="短くてもOK。自分の考えを書こう。"></textarea><div class="selfGrade"><button class="btn primary" id="adaptiveTextBtn">提出して比べる</button></div>`;
+    $('adaptiveTextBtn').onclick=judgeAdaptiveText
+  }
+}
+function adaptiveCorrect(msg){
+  const q=AD.current, first=AD.wrong===0&&!AD.usedHint, comeback=AD.wrong>0;const fs=familyState(q.family);fs.right++;if(first&&fs.right%2===0)fs.level=Math.min(5,fs.level+1);
+  const bonus=q.diff>=4?3:q.diff>=3?2:1;AD.score+=bonus+(first&&!AD.usedHint?1:0);AD.completed++;
+  recordComplete(q.topic,q.diff,{first,correct:true,comeback,points:bonus});
+  $('practiceScore').textContent=`${AD.score} pt`;$('practiceDone').textContent=`${AD.completed} / ${AD.endless?'∞':AD.target}`;$('adaptiveStreak').textContent=`${STATS.streak}連続`;
+  $('practiceFeedback').className='feedback show good';$('practiceFeedback').innerHTML=`<b>${first?'一発！':'できた！'}</b><br>${msg}${comeback?'<br><b>この型、さっきよりできてる。</b>':''}`;
+  $('practiceNext').style.display='inline-block';
+  if(first&&STATS.streak>=3)AD.reason='連続正解！次は難度を1段上げます。';
+}
+function adaptiveWrong(){
+  const q=AD.current;AD.wrong++;recordWrong(q.topic);const fs=familyState(q.family);fs.wrong++;
+  if(AD.wrong===1){
+    const n=mode==='easy'?3:mode==='normal'?2:1;queueSimilar(q,n,'同じ考え方を数字・場面だけ変えて定着');
+    $('practiceFeedback').className='feedback show bad';$('practiceFeedback').innerHTML=`<b>ここから個別最適化。</b><br>${q.h||'考え方を1つ確認しよう。'}<br><b>このあと同じ型を${n}問出します。</b>`;
+    $('workedExample').style.display='block';$('workedExample').innerHTML=`<b>🌱 例題・考え方</b><br>${q.example||q.e}`;
+  }else{
+    $('practiceFeedback').className='feedback show bad';$('practiceFeedback').innerHTML=`<b>答えを確認して進んでOK。</b><br>${q.e}`;
+    AD.completed++;recordComplete(q.topic,q.diff,{correct:false,reveal:true,points:0});$('practiceNext').style.display='inline-block'
+  }
+}
+function judgeAdaptiveMC(i,b){if($('practiceNext').style.display==='inline-block')return;const q=AD.current;if(i===q.a){b.classList.add('good');adaptiveCorrect(q.e)}else{b.classList.add('bad');adaptiveWrong();if(mode==='easy'&&AD.wrong===1){const wrongs=[...document.querySelectorAll('#practiceAnswer .choice')].filter((x,j)=>j!==q.a&&j!==i);if(wrongs[0])wrongs[0].classList.add('removed')}}}
+function judgeAdaptiveNum(){if($('practiceNext').style.display==='inline-block')return;const q=AD.current,v=Number($('adaptiveNum').value);if(Math.abs(v-q.ans)<1e-9)adaptiveCorrect(q.e);else adaptiveWrong()}
+function judgeAdaptiveText(){if($('practiceNext').style.display==='inline-block')return;const q=AD.current,t=$('adaptiveText').value.trim();if(!t){$('practiceFeedback').className='feedback show bad';$('practiceFeedback').innerHTML='<b>一言でOK。</b> 書けなければ「答え・解説」を見ても大丈夫。';return}
+  const hit=q.keys.filter(k=>t.includes(k)).length;const ok=hit>=Math.ceil(q.keys.length*.6);AD.completed++;
+  if(ok){AD.score+=q.diff;recordComplete(q.topic,q.diff,{first:true,correct:true,points:q.diff});familyState(q.family).right++}else{recordComplete(q.topic,q.diff,{correct:false,reveal:true});queueSimilar(q,mode==='easy'?2:1,'記述の考え方を別場面でもう一度')}
+  $('practiceFeedback').className='feedback show good';$('practiceFeedback').innerHTML=`<b>${ok?'○ 考え方は入ってる！':'△ 模範と比べよう'}</b><br>拾えた観点 ${hit}/${q.keys.length}<br><b>模範：</b>${q.model}<br><span style="color:#62798c">完全一致は不要。比べたら次へ進んでOK。</span>`;$('practiceNext').style.display='inline-block'
+}
+$('practiceHint').onclick=()=>{AD.usedHint=true;recordHint();const q=AD.current;$('practiceSupport').innerHTML=`<b>💡 ヒント：</b> ${q.h||q.example||q.e}`};
+$('practiceReveal').onclick=()=>{if($('practiceNext').style.display==='inline-block')return;const q=AD.current;AD.completed++;recordComplete(q.topic,q.diff,{correct:false,reveal:true});queueSimilar(q,mode==='easy'?2:1,'解説を見た型を、もう一度自分で解く');$('practiceFeedback').className='feedback show good';$('practiceFeedback').innerHTML=`<b>答え・解説</b><br>${q.type==='mc'?`答え：${String.fromCharCode(65+q.a)}. ${q.c[q.a]}<br>`:q.type==='num'?`答え：${q.ans}${q.unit||''}<br>`:`模範：${q.model}<br>`}${q.e||''}<br><b>次に似た問題が出ます。</b>`;$('practiceNext').style.display='inline-block'};
+$('practiceNext').onclick=loadAdaptive;
+$('adaptiveFinish').onclick=()=>showAchievement('ここまでの達成');
+$('adaptiveGo').onclick=startAdaptive;
+
 
 // ----- Arrow lab -----
 const ARROW=[
@@ -349,8 +629,8 @@ cv.addEventListener('pointerdown',e=>{const p=nearestAnchor(pointerPos(e));if(!p
 cv.addEventListener('pointermove',e=>{if(!drawing)return;const p=pointerPos(e),dx=p.x-startPt.x,dy=p.y-startPt.y,g=step();if(Math.abs(dx)>Math.abs(dy))curPt={x:startPt.x+Math.round(dx/g)*g,y:startPt.y};else curPt={x:startPt.x,y:startPt.y+Math.round(dy/g)*g};drawCanvas()});
 cv.addEventListener('pointerup',e=>{if(!drawing)return;drawing=false;const g=step(),dx=Math.round((curPt.x-startPt.x)/g),dy=Math.round((curPt.y-startPt.y)/g);if(dx||dy)arrows.push({cls:startPt.cls,sx:startPt.x,sy:startPt.y,ex:startPt.x+dx*g,ey:startPt.y+dy*g,dx,dy});startPt=curPt=null;drawCanvas()});
 function arrowMatch(){const exp=ARROW[ai].exp;if(arrows.length!==exp.length)return false;const used=new Set();for(const a of arrows){let found=-1;for(let i=0;i<exp.length;i++){if(used.has(i))continue;const e=exp[i];if(a.cls===e[0]&&a.dx===e[1]&&a.dy===e[2]){found=i;break}}if(found<0)return false;used.add(found)}return true}
-$('arrowUndo').onclick=()=>{arrows.pop();drawCanvas()};$('arrowClear').onclick=()=>{arrows=[];drawCanvas()};$('arrowHint').onclick=()=>{arrowHintLevel++;$('arrowSupport').innerHTML=`<b>💡 ヒント：</b> ${ARROW[ai].easy}${mode==='easy'&&arrowHintLevel>=2?' 緑のお手本をなぞってOK。':''}`;drawCanvas()};
-$('arrowJudge').onclick=()=>{if(arrowMatch()){arrowDone.add(ai);$('arrowFeedback').className='feedback show good';$('arrowFeedback').innerHTML='<b>正解！</b> 作用点・向き・大きさ、全部OK。';$('arrowNext').style.display='inline-block';renderArrowStages()}else{$('arrowFeedback').className='feedback show bad';$('arrowFeedback').innerHTML=`<b>あと少し。</b> ${arrows.length!==ARROW[ai].exp.length?`必要な矢印は${ARROW[ai].exp.length}本。今は${arrows.length}本。`:'作用点・向き・長さを1つずつ確認。'}`}}
+$('arrowUndo').onclick=()=>{arrows.pop();drawCanvas()};$('arrowClear').onclick=()=>{arrows=[];drawCanvas()};$('arrowHint').onclick=()=>{arrowHintLevel++;recordHint();$('arrowSupport').innerHTML=`<b>💡 ヒント：</b> ${ARROW[ai].easy}${mode==='easy'&&arrowHintLevel>=2?' 緑のお手本をなぞってOK。':''}`;drawCanvas()};
+$('arrowJudge').onclick=()=>{if(arrowMatch()){arrowDone.add(ai);recordComplete('力の表し方',Math.min(5,2+Math.floor(ai/3)),{first:arrowHintLevel===0,correct:true,points:2});STATS.modules.arrow++;saveStats();$('arrowFeedback').className='feedback show good';$('arrowFeedback').innerHTML='<b>正解！</b> 作用点・向き・大きさ、全部OK。';$('arrowNext').style.display='inline-block';renderArrowStages()}else{recordWrong('力の表し方');$('arrowFeedback').className='feedback show bad';$('arrowFeedback').innerHTML=`<b>あと少し。</b> ${arrows.length!==ARROW[ai].exp.length?`必要な矢印は${ARROW[ai].exp.length}本。今は${arrows.length}本。`:'作用点・向き・長さを1つずつ確認。'}`}}
 $('arrowNext').onclick=()=>{ai++;loadArrow()};$('arrowSkip').onclick=()=>finishResult('矢印実技',arrowDone.size,arrowTotal());
 
 // ----- Pressure lab -----
@@ -378,10 +658,10 @@ function loadPressure(){
 function renderPressureStages(){const n=pressureTotal(),box=$('pressureStages');box.innerHTML='';for(let i=0;i<n;i++){const b=document.createElement('button');b.className='stageBtn '+(i===pi?'current':'');b.textContent=i+1;b.onclick=()=>{pi=i;loadPressure()};box.appendChild(b)}}
 $('pressureJudge').onclick=()=>{
  if(psolved)return;const q=P[pi],v=Number($('pressureInput').value);
- if(Math.abs(v-q.ans)<1e-9){psolved=true;$('pressureFeedback').className='feedback show good';$('pressureFeedback').innerHTML=`<b>正解！ ${q.ans}Pa</b><br>${q.force}÷${q.area}＝${q.ans}`;$('pressureNext').style.display='inline-block'}
- else{pwrong++;$('pressureFeedback').className='feedback show bad';if(pwrong>=2){$('pressureFeedback').innerHTML=`<b>答えを確認して次へ。</b><br>${q.h}＝${q.ans}Pa`;$('pressureNext').style.display='inline-block';psolved=true}else $('pressureFeedback').innerHTML=`<b>おしい。</b><br>${mode==='easy'?q.h:'力÷面積、単位を確認。'}`}}
-$('pressureHint').onclick=()=>{const q=P[pi];$('pressureSupport').innerHTML=`<b>💡 ヒント：</b> ${q.h}`};
-$('pressureReveal').onclick=()=>{const q=P[pi];psolved=true;$('pressureFeedback').className='feedback show good';$('pressureFeedback').innerHTML=`<b>答え：${q.ans}Pa</b><br>${q.h}`;$('pressureNext').style.display='inline-block'};
+ if(Math.abs(v-q.ans)<1e-9){recordComplete('圧力',Math.min(4,1+Math.floor(pi/2)),{first:pwrong===0,correct:true,points:2});STATS.modules.pressure++;saveStats();psolved=true;$('pressureFeedback').className='feedback show good';$('pressureFeedback').innerHTML=`<b>正解！ ${q.ans}Pa</b><br>${q.force}÷${q.area}＝${q.ans}`;$('pressureNext').style.display='inline-block'}
+ else{pwrong++;recordWrong('圧力');$('pressureFeedback').className='feedback show bad';if(pwrong>=2){$('pressureFeedback').innerHTML=`<b>答えを確認して次へ。</b><br>${q.h}＝${q.ans}Pa`;$('pressureNext').style.display='inline-block';psolved=true}else $('pressureFeedback').innerHTML=`<b>おしい。</b><br>${mode==='easy'?q.h:'力÷面積、単位を確認。'}`}}
+$('pressureHint').onclick=()=>{recordHint();const q=P[pi];$('pressureSupport').innerHTML=`<b>💡 ヒント：</b> ${q.h}`};
+$('pressureReveal').onclick=()=>{const q=P[pi];recordComplete('圧力',Math.min(4,1+Math.floor(pi/2)),{correct:false,reveal:true});psolved=true;$('pressureFeedback').className='feedback show good';$('pressureFeedback').innerHTML=`<b>答え：${q.ans}Pa</b><br>${q.h}`;$('pressureNext').style.display='inline-block'};
 $('pressureNext').onclick=()=>{pi++;loadPressure()};
 
 // ----- Spring / mass & weight -----
@@ -400,10 +680,10 @@ let si=0,ssolved=false,swrong=0;
 function startSpring(){si=0;loadSpring()}
 function loadSpring(){if(si>=S.length){finishResult('ばね・質量と重さ 完走',S.length,S.length);return}const q=S[si];ssolved=false;swrong=0;show('springLab');setProgress('ばね・質量と重さ',si/S.length*100,`${si+1}/${S.length}`);$('springTitle').textContent=q.title;$('springCount').textContent=`${si+1} / ${S.length}`;$('springPrompt').textContent=q.p;$('springFeedback').className='feedback';$('springFeedback').innerHTML='';$('springNext').style.display='none';$('springSupport').innerHTML=mode==='easy'?'<b>やさしいナビ：</b> 表の「1個増えるとどれだけ増える？」を見る。':'表とグラフを行き来して考えよう。';renderSpringAnswer(q)}
 function renderSpringAnswer(q){const a=$('springAnswer');if(q.type==='mc'){a.innerHTML=`<div class="choices">${q.c.map((x,i)=>`<button class="choice" data-i="${i}">${String.fromCharCode(65+i)}. ${x}</button>`).join('')}</div>`;a.querySelectorAll('.choice').forEach(b=>b.onclick=()=>judgeSpringMC(q,Number(b.dataset.i),b))}else{a.innerHTML=`<div class="answerRow"><input id="springNum" class="numInput" inputmode="decimal"><b>${q.unit}</b><button class="btn primary" id="springJudgeNum">判定</button></div>`;$('springJudgeNum').onclick=()=>judgeSpringNum(q)}}
-function springPass(q){ssolved=true;$('springFeedback').className='feedback show good';$('springFeedback').innerHTML=`<b>OK！</b><br>${q.e}`;$('springNext').style.display='inline-block'}
-function judgeSpringMC(q,i,b){if(ssolved)return;if(i===q.a){b.classList.add('good');springPass(q)}else{swrong++;b.classList.add('bad');$('springFeedback').className='feedback show bad';if(swrong>=2){document.querySelectorAll('#springAnswer .choice')[q.a].classList.add('good');$('springFeedback').innerHTML=`<b>解説を確認。</b><br>${q.e}`;ssolved=true;$('springNext').style.display='inline-block'}else $('springFeedback').innerHTML='<b>もう1回だけ。</b> 表やグラフを確認しよう。'}}
-function judgeSpringNum(q){if(ssolved)return;const v=Number($('springNum').value);if(Math.abs(v-q.ans)<1e-9)springPass(q);else{swrong++;$('springFeedback').className='feedback show bad';if(swrong>=2){$('springFeedback').innerHTML=`<b>解説を確認。</b><br>${q.e}`;ssolved=true;$('springNext').style.display='inline-block'}else $('springFeedback').innerHTML='<b>おしい。</b> 比例関係を使おう。'}}
-$('springReveal').onclick=()=>{const q=S[si];ssolved=true;$('springFeedback').className='feedback show good';$('springFeedback').innerHTML=`<b>答え・解説</b><br>${q.e}`;$('springNext').style.display='inline-block'};$('springNext').onclick=()=>{si++;loadSpring()};
+function springPass(q){recordComplete(si>=6?'質量と重さ':'ばね',Math.min(4,1+Math.floor(si/2)),{first:swrong===0,correct:true,points:2});STATS.modules.spring++;saveStats();ssolved=true;$('springFeedback').className='feedback show good';$('springFeedback').innerHTML=`<b>OK！</b><br>${q.e}`;$('springNext').style.display='inline-block'}
+function judgeSpringMC(q,i,b){if(ssolved)return;if(i===q.a){b.classList.add('good');springPass(q)}else{swrong++;recordWrong(si>=6?'質量と重さ':'ばね');b.classList.add('bad');$('springFeedback').className='feedback show bad';if(swrong>=2){document.querySelectorAll('#springAnswer .choice')[q.a].classList.add('good');$('springFeedback').innerHTML=`<b>解説を確認。</b><br>${q.e}`;ssolved=true;$('springNext').style.display='inline-block'}else $('springFeedback').innerHTML='<b>もう1回だけ。</b> 表やグラフを確認しよう。'}}
+function judgeSpringNum(q){if(ssolved)return;const v=Number($('springNum').value);if(Math.abs(v-q.ans)<1e-9)springPass(q);else{swrong++;recordWrong(si>=6?'質量と重さ':'ばね');$('springFeedback').className='feedback show bad';if(swrong>=2){$('springFeedback').innerHTML=`<b>解説を確認。</b><br>${q.e}`;ssolved=true;$('springNext').style.display='inline-block'}else $('springFeedback').innerHTML='<b>おしい。</b> 比例関係を使おう。'}}
+$('springReveal').onclick=()=>{const q=S[si];recordComplete(si>=6?'質量と重さ':'ばね',Math.min(4,1+Math.floor(si/2)),{correct:false,reveal:true});ssolved=true;$('springFeedback').className='feedback show good';$('springFeedback').innerHTML=`<b>答え・解説</b><br>${q.e}`;$('springNext').style.display='inline-block'};$('springNext').onclick=()=>{si++;loadSpring()};
 
 // ----- Exam challenge -----
 const E=[
@@ -419,15 +699,70 @@ let ei=0,escore=0,esolved=false,ewrong=0;
 function startExam(){ei=0;escore=0;loadExam()}
 function loadExam(){if(ei>=E.length){finishResult('入試級 完走',escore,E.length*3,true);return}const q=E[ei];esolved=false;ewrong=0;show('exam');setProgress('入試級チャレンジ',ei/E.length*100,`${ei+1}/${E.length}`);$('examLevel').textContent=q.level;$('examCount').textContent=`${ei+1}/${E.length}`;$('examScore').textContent=`${escore}pt`;$('examTitle').textContent=q.title;$('examPrompt').textContent=q.p;$('examData').innerHTML=q.data?`<div class="dataBox">${q.data}</div>`:'';$('examFeedback').className='feedback';$('examFeedback').innerHTML='';$('examNext').style.display='none';renderExamAnswer(q)}
 function renderExamAnswer(q){const a=$('examAnswer');if(q.type==='mc'){a.innerHTML=`<div class="choices">${q.c.map((x,i)=>`<button class="choice" data-i="${i}">${String.fromCharCode(65+i)}. ${x}</button>`).join('')}</div>`;a.querySelectorAll('.choice').forEach(b=>b.onclick=()=>judgeExamMC(q,Number(b.dataset.i),b))}else if(q.type==='num'){a.innerHTML=`<div class="answerRow"><input id="examNum" class="numInput" inputmode="decimal"><b>${q.unit}</b><button class="btn primary" id="examJudgeNum">判定</button></div>`;$('examJudgeNum').onclick=()=>judgeExamNum(q)}else{a.innerHTML=`<textarea id="examText" class="textAnswer" placeholder="短くてもOK。1回提出したら次へ進めます。"></textarea><div class="selfGrade"><button class="btn primary" id="examJudgeText">提出して自己採点</button></div>`;$('examJudgeText').onclick=()=>judgeExamText(q)}}
-function examPass(q,msg,pts=3){if(esolved)return;esolved=true;escore+=pts;$('examScore').textContent=`${escore}pt`;$('examFeedback').className='feedback show good';$('examFeedback').innerHTML=`<b>突破！</b><br>${msg}`;$('examNext').style.display='inline-block'}
-function judgeExamMC(q,i,b){if(esolved)return;if(i===q.a){b.classList.add('good');examPass(q,q.e,ewrong?2:3)}else{ewrong++;b.classList.add('bad');$('examFeedback').className='feedback show bad';if(ewrong>=2){document.querySelectorAll('#examAnswer .choice')[q.a].classList.add('good');$('examFeedback').innerHTML=`<b>解説を確認して次へ。</b><br>${q.e}`;esolved=true;$('examNext').style.display='inline-block'}else $('examFeedback').innerHTML='<b>もう1回だけ。</b> 条件を1つ見直そう。'}}
-function judgeExamNum(q){if(esolved)return;const v=Number($('examNum').value);if(Math.abs(v-q.ans)<1e-9)examPass(q,q.e,ewrong?2:3);else{ewrong++;$('examFeedback').className='feedback show bad';if(ewrong>=2){$('examFeedback').innerHTML=`<b>解説を確認して次へ。</b><br>${q.e}`;esolved=true;$('examNext').style.display='inline-block'}else $('examFeedback').innerHTML='<b>おしい。</b> 単位と式を確認。'}}
-function judgeExamText(q){if(esolved)return;const t=$('examText').value.trim();if(!t){$('examFeedback').className='feedback show bad';$('examFeedback').innerHTML='<b>一言でOK。</b> 書けなければ「解説を見る」で進めます。';return}const hit=q.keys.filter(k=>t.includes(k)).length;const level=hit===q.keys.length?'◎':hit>=Math.ceil(q.keys.length/2)?'○':'△';escore+=level==='◎'?3:level==='○'?2:1;esolved=true;$('examScore').textContent=`${escore}pt`;$('examFeedback').className='feedback show good';$('examFeedback').innerHTML=`<b>${level} 自己採点。提出完了、次へ進んでOK。</b><br>拾えた観点：${hit}/${q.keys.length}<br><b>模範：</b>${q.model}`;$('examNext').style.display='inline-block'}
-$('examReveal').onclick=()=>{const q=E[ei];esolved=true;$('examFeedback').className='feedback show good';$('examFeedback').innerHTML=`<b>解説</b><br>${q.type==='text'?`模範：${q.model}`:q.e}`;$('examNext').style.display='inline-block'};$('examNext').onclick=()=>{ei++;loadExam()};
+function examPass(q,msg,pts=3){if(esolved)return;recordComplete(q.title.includes('圧力')?'圧力':q.title.includes('ばね')?'ばね':q.title.includes('月')?'質量と重さ':'つり合い',q.level==='BOSS'?5:4,{first:ewrong===0,correct:true,points:pts});STATS.modules.exam++;saveStats();esolved=true;escore+=pts;$('examScore').textContent=`${escore}pt`;$('examFeedback').className='feedback show good';$('examFeedback').innerHTML=`<b>突破！</b><br>${msg}`;$('examNext').style.display='inline-block'}
+function judgeExamMC(q,i,b){if(esolved)return;if(i===q.a){b.classList.add('good');examPass(q,q.e,ewrong?2:3)}else{ewrong++;recordWrong('つり合い');b.classList.add('bad');$('examFeedback').className='feedback show bad';if(ewrong>=2){document.querySelectorAll('#examAnswer .choice')[q.a].classList.add('good');$('examFeedback').innerHTML=`<b>解説を確認して次へ。</b><br>${q.e}`;esolved=true;$('examNext').style.display='inline-block'}else $('examFeedback').innerHTML='<b>もう1回だけ。</b> 条件を1つ見直そう。'}}
+function judgeExamNum(q){if(esolved)return;const v=Number($('examNum').value);if(Math.abs(v-q.ans)<1e-9)examPass(q,q.e,ewrong?2:3);else{ewrong++;recordWrong(q.title.includes('圧力')?'圧力':'つり合い');$('examFeedback').className='feedback show bad';if(ewrong>=2){$('examFeedback').innerHTML=`<b>解説を確認して次へ。</b><br>${q.e}`;esolved=true;$('examNext').style.display='inline-block'}else $('examFeedback').innerHTML='<b>おしい。</b> 単位と式を確認。'}}
+function judgeExamText(q){if(esolved)return;const t=$('examText').value.trim();if(!t){$('examFeedback').className='feedback show bad';$('examFeedback').innerHTML='<b>一言でOK。</b> 書けなければ「解説を見る」で進めます。';return}const hit=q.keys.filter(k=>t.includes(k)).length;const level=hit===q.keys.length?'◎':hit>=Math.ceil(q.keys.length/2)?'○':'△';escore+=level==='◎'?3:level==='○'?2:1;recordComplete(q.title.includes('雪')?'圧力':'つり合い',q.level==='BOSS'?5:4,{first:level!=='△',correct:level!=='△',reveal:level==='△',points:level==='◎'?3:level==='○'?2:0});STATS.modules.exam++;saveStats();esolved=true;$('examScore').textContent=`${escore}pt`;$('examFeedback').className='feedback show good';$('examFeedback').innerHTML=`<b>${level} 自己採点。提出完了、次へ進んでOK。</b><br>拾えた観点：${hit}/${q.keys.length}<br><b>模範：</b>${q.model}`;$('examNext').style.display='inline-block'}
+$('examReveal').onclick=()=>{const q=E[ei];recordComplete(q.title.includes('圧力')?'圧力':q.title.includes('ばね')?'ばね':q.title.includes('月')?'質量と重さ':'つり合い',4,{correct:false,reveal:true});esolved=true;$('examFeedback').className='feedback show good';$('examFeedback').innerHTML=`<b>解説</b><br>${q.type==='text'?`模範：${q.model}`:q.e}`;$('examNext').style.display='inline-block'};$('examNext').onclick=()=>{ei++;loadExam()};
 
-function finishResult(title,score,max,exam=false){show('result');setProgress('完了',100,'🎉');let rate=max?score/max:1;let rank=rate>=.85?'S':rate>=.65?'A':rate>=.45?'B':'C';$('resultRank').textContent=rank;$('resultTitle').textContent=title;$('resultText').textContent=exam?'知識だけでなく、条件の見抜き・説明・計算まで挑戦できました。':'最後まで進めたことが大事。解説を見て進んでも、復習としては十分価値があります。';$('resultStats').innerHTML=`<span class="stat">得点・達成 ${score}</span><span class="stat">目安 ${max}</span><span class="stat">RANK ${rank}</span>`}
 
-$('lessonStart').onclick=startLessons;$('practiceStart').onclick=()=>startPractice();$('arrowStart').onclick=startArrow;$('pressureStart').onclick=startPressure;$('springStart').onclick=startSpring;$('examStart').onclick=startExam;
+function mainTitle(){
+  const c=STATS.completed,h=STATS.hard,st=STATS.maxStreak;
+  if(c>=150||h>=25)return'力学神';
+  if(c>=100||h>=18)return'力の支配者';
+  if(c>=80||h>=13)return'ニュートン級';
+  if(c>=60)return'フォースマスター';
+  if(c>=45)return'力学研究員';
+  if(c>=30)return'つり合いハンター';
+  if(c>=20)return'矢印職人';
+  if(c>=12)return'ニュートンの卵';
+  if(c>=5)return'フォース見習い';
+  return'力の観測者';
+}
+function badges(){
+  const b=[];
+  if(STATS.completed>=20)b.push(['🏃','20問突破']);
+  if(STATS.completed>=50)b.push(['🚀','50問突破']);
+  if(STATS.completed>=100)b.push(['💯','100問突破']);
+  if(STATS.maxStreak>=5)b.push(['⚡',`${STATS.maxStreak}連続正解`]);
+  if(STATS.hard>=5)b.push(['🔥','難問ハンター']);
+  if(STATS.hard>=12)b.push(['👑','入試ブレイカー']);
+  if(STATS.comeback>=3)b.push(['🌱','粘りの研究者']);
+  if(STATS.modules.arrow>=7)b.push(['↗️','矢印マスター']);
+  if(STATS.modules.pressure>=6)b.push(['🧮','圧力ハンター']);
+  if(STATS.modules.spring>=6)b.push(['🪀','ばね研究員']);
+  if(STATS.reveals===0&&STATS.completed>=10)b.push(['💎','ノー解説']);
+  return b;
+}
+function learningMinutes(){return Math.max(1,Math.round((Date.now()-STATS.startedAt)/60000))}
+function showAchievement(reason='今日の達成'){
+  show('result');setProgress('達成画面',100,'📸');
+  const name=($('studentName')?.value||localStorage.getItem('forceLabStudentName')||'').trim();
+  $('resultStudent').textContent=name||'学習者';
+  $('resultTitleAward').textContent='🏅 '+mainTitle();
+  $('resultTitle').textContent=reason;
+  const rate=STATS.completed?Math.round(STATS.firstTry/STATS.completed*100):0;
+  $('resultText').textContent=STATS.completed?`${STATS.completed}問に取り組みました。苦手な型は類題で、得意な型は難問まで進んだ記録です。`:'まだ記録はありません。1問解くとここに積み上がります。';
+  $('statSolved').textContent=STATS.completed;$('statFirst').textContent=STATS.firstTry;$('statRate').textContent=rate+'%';$('statStreak').textContent=STATS.maxStreak;$('statHard').textContent=STATS.hard;$('statTime').textContent=learningMinutes()+'分';
+  $('topicMastery').innerHTML=TOPICS.map(t=>{const s=topicStat(t),p=masteryPct(t);return`<div class="topicLine"><b>${t}</b><div class="topicBar"><i style="width:${p}%"></i></div><span class="topicPct">${s.completed?p+'%':'--'}</span></div>`}).join('');
+  const bs=badges();$('resultBadges').innerHTML=bs.length?bs.map((x,i)=>`<span class="badge ${i<2?'gold':''}">${x[0]} ${x[1]}</span>`).join(''):'<span class="badge">🌱 最初の1問から称号が育つ</span>';
+  const weak=TOPICS.map(t=>[t,masteryPct(t),topicStat(t).completed]).filter(x=>x[2]>0).sort((a,b)=>a[1]-b[1])[0];
+  const strong=TOPICS.map(t=>[t,masteryPct(t),topicStat(t).completed]).filter(x=>x[2]>0).sort((a,b)=>b[1]-a[1])[0];
+  $('resultAdvice').innerHTML=weak?`<b>今日の強み：</b>${strong[0]}　　<b>次に伸ばすなら：</b>${weak[0]}<br>「個別最適ラボ」で次回も弱い型から自動で出題します。`:'まずは好きなところから始めよう。';
+  $('resultDate').textContent=`${todayString()}｜問題バンク ${BANK.length}問＋実技`;
+}
+function finishResult(title,score,max,exam=false){showAchievement(title)}
+
+$('lessonStart').onclick=startLessons;$('practiceStart').onclick=showAdaptiveSetup;$('arrowStart').onclick=startArrow;$('pressureStart').onclick=startPressure;$('springStart').onclick=startSpring;$('examStart').onclick=startExam;$('headerAchievement').onclick=()=>showAchievement('今日の達成');
+
+$('bankCountHome').textContent=BANK.length+'問';
+const savedName=localStorage.getItem('forceLabStudentName')||'';$('studentName').value=savedName;
+$('studentName').addEventListener('input',()=>localStorage.setItem('forceLabStudentName',$('studentName').value));
+updateHomeMini();
+$('captureBtn').onclick=()=>{document.body.classList.add('captureMode');$('result').classList.add('active');$('captureExit').classList.add('show');window.scrollTo(0,0)};
+$('captureExit').onclick=()=>{document.body.classList.remove('captureMode');$('captureExit').classList.remove('show')};
+$('resetToday').onclick=()=>{if(confirm('今日の学習記録を0に戻しますか？')){STATS=blankStats();saveStats();showAchievement('今日の達成')}};
+
 </script>
 </body>
 </html>
